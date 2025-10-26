@@ -41,7 +41,7 @@ const Profile = () => {
   const loadStats = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch("https://style-bcgu.onrender.com/api/users/profile", {
+      const response = await fetch("API_ENDPOINTS.PROFILE", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();
@@ -62,7 +62,7 @@ const Profile = () => {
     const token = localStorage.getItem("token");
     console.log('🔍 Fetching designs for user:', user._id);
     try {
-      const url = `https://style-bcgu.onrender.com/api/designs?userId=${user._id}&limit=100&sortBy=createdAt&sortOrder=desc`;
+      const url = `API_ENDPOINTS.DESIGNS?userId=${user._id}&limit=100&sortBy=createdAt&sortOrder=desc`;
       console.log('📡 API URL:', url);
       
       const response = await fetch(url, {

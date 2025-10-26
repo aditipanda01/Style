@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { API_ENDPOINTS } from '../config/api';
 
 const AuthContext = createContext();
 
@@ -25,7 +26,7 @@ export const AuthProvider = ({ children }) => {
     if (!token) return;
     
     try {
-      const response = await fetch('https://style-bcgu.onrender.com/api/users/profile', {
+      const response = await fetch(API_ENDPOINTS.PROFILE, {
         headers: { 
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -53,8 +54,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       console.log('🔐 Attempting login...');
-      
-      const response = await fetch('https://style-bcgu.onrender.com/api/auth/login', {
+      const response = await fetch(API_ENDPOINTS.LOGIN, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json'
@@ -98,7 +98,7 @@ export const AuthProvider = ({ children }) => {
       console.log('📝 Attempting registration...');
       console.log('📤 User data:', userData);
       
-      const response = await fetch('https://style-bcgu.onrender.com/api/auth/register', {
+      const response = await fetch('API_ENDPOINTS.REGISTER', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json'
@@ -151,7 +151,7 @@ export const AuthProvider = ({ children }) => {
 
   const updateProfile = async (profileData) => {
     try {
-      const response = await fetch('https://style-bcgu.onrender.com/api/users/profile', {
+      const response = await fetch('API_ENDPOINTS.PROFILE', {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',

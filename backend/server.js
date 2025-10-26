@@ -24,8 +24,10 @@ app.use(express.json());
 
 // Setup CORS
 const allowedOrigins = [
-  process.env.CLIENT_URL,          // e.g., Vercel frontend
-  "http://localhost:5173"          // for local dev
+  process.env.CLIENT_URL,
+  "https://style-840q62hgc-aditipanda01s-projects.vercel.app",
+  "https://style-bcgu.onrender.com",
+  "http://localhost:5173"
 ].filter(Boolean);
 
 app.use(cors({
