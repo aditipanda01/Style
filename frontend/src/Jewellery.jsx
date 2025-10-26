@@ -203,7 +203,7 @@ const JewelleryPage = () => {
   const fetchJewelleryDesigns = async () => {
     try {
       setLoading(true);
-      const response = await fetch('API_ENDPOINTS.DESIGNS?category=jewellery&limit=100&sortBy=createdAt&sortOrder=desc');
+        const response = await fetch(`${API_ENDPOINTS.DESIGNS}?category=jewellery&limit=100&sortBy=createdAt&sortOrder=desc`);
       const data = await response.json();
       
       if (data.success) {

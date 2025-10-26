@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "./contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import DesignSubmissionForm from "./components/DesignSubmissionForm";
-import { API_ENDPOINTS } from '../config/api';
+import { API_ENDPOINTS } from './config/api';
 
 const Profile = () => {
   const { user, logout, isAuthenticated } = useAuth();
@@ -42,7 +42,7 @@ const Profile = () => {
   const loadStats = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch("API_ENDPOINTS.PROFILE", {
+      const response = await fetch(API_ENDPOINTS.PROFILE, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();
@@ -63,7 +63,7 @@ const Profile = () => {
     const token = localStorage.getItem("token");
     console.log('🔍 Fetching designs for user:', user._id);
     try {
-      const url = `API_ENDPOINTS.DESIGNS?userId=${user._id}&limit=100&sortBy=createdAt&sortOrder=desc`;
+      const url = `${API_ENDPOINTS.DESIGNS}?userId=${user._id}&limit=100&sortBy=createdAt&sortOrder=desc`;
       console.log('📡 API URL:', url);
       
       const response = await fetch(url, {

@@ -106,67 +106,66 @@ const DesignSubmissionForm = ({ onClose, onSuccess }) => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!formData.title.trim()) return setError("Title is required");
-  if (selectedFiles.length === 0) return setError("Please select at least one design file");
-  if (!designerPhoto) return setError("Please upload your designer photo");
-  if (!formData.inspiration.trim()) return setError("Inspiration/Tags are required");
+    if (!formData.title.trim()) return setError("Title is required");
+    if (selectedFiles.length === 0) return setError("Please select at least one design file");
+    if (!designerPhoto) return setError("Please upload your designer photo");
+    if (!formData.inspiration.trim()) return setError("Inspiration/Tags are required");
 
-  setUploading(true);
-  setError("");
+    setUploading(true);
+    setError("");
 
-  try {
-    const designerPhotoData = await uploadToCloudinary(designerPhoto);
+    try {
+      const designerPhotoData = await uploadToCloudinary(designerPhoto);
 
-    const uploadPromises = selectedFiles.map(file => uploadToCloudinary(file));
-    const uploadedFiles = await Promise.all(uploadPromises);
+      const uploadPromises = selectedFiles.map(file => uploadToCloudinary(file));
+      const uploadedFiles = await Promise.all(uploadPromises);
 
-    const token = localStorage.getItem("token");
-    if (!token) throw new Error("You must be logged in to submit designs");
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("You must be logged in to submit designs");
 
-    const response = await fetch("API_ENDPOINTS.DESIGNS", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        title: formData.title.trim(),
-        description: formData.description.trim(),
-        category: formData.category,
-        tags: formData.inspiration.split(",").map(tag => tag.trim()).filter(Boolean),
-        isPublic: true,
-        isAvailableForCollab: false,
-        images: uploadedFiles.map((file, index) => ({
-          url: file.url,
-          publicId: file.publicId,
-          isPrimary: index === 0,
-          resourceType: file.resourceType,
-        })),
-        inspiration: formData.inspiration.trim(),
-        designerPhoto: {
-          url: designerPhotoData.url,
-          publicId: designerPhotoData.publicId,
+      const response = await fetch(API_ENDPOINTS.DESIGNS, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
-      }),
-    });
+        body: JSON.stringify({
+          title: formData.title.trim(),
+          description: formData.description.trim(),
+          category: formData.category,
+          tags: formData.inspiration.split(",").map(tag => tag.trim()).filter(Boolean),
+          isPublic: true,
+          isAvailableForCollab: false,
+          images: uploadedFiles.map((file, index) => ({
+            url: file.url,
+            publicId: file.publicId,
+            isPrimary: index === 0,
+            resourceType: file.resourceType,
+          })),
+          inspiration: formData.inspiration.trim(),
+          designerPhoto: {
+            url: designerPhotoData.url,
+            publicId: designerPhotoData.publicId,
+          },
+        }),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (!response.ok) throw new Error(data.error?.message || "Failed to submit design");
+      if (!response.ok) throw new Error(data.error?.message || "Failed to submit design");
 
-    alert("Design submitted successfully! 🎉");
-    if (onSuccess) onSuccess(data.data);
-    if (onClose) onClose();
-  } catch (err) {
-    console.error("Submission error:", err);
-    setError(err.message || "Failed to submit design. Please try again.");
-  } finally {
-    setUploading(false);
-  }
-};
-
+      alert("Design submitted successfully! 🎉");
+      if (onSuccess) onSuccess(data.data);
+      if (onClose) onClose();
+    } catch (err) {
+      console.error("Submission error:", err);
+      setError(err.message || "Failed to submit design. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   return (
     <div style={{

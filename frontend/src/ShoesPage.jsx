@@ -4,7 +4,7 @@ import bgshoes from "./assets/bgshoes.jpeg";
 import shoesbg2 from "./assets/shoesbg2.jpg";
 import shoesbg3 from "./assets/shoesbg3.jpg";
 import shoesbg5 from "./assets/shoesbg5.jpeg";
-import { API_ENDPOINTS } from '../config/api';
+import { API_ENDPOINTS } from './config/api';
 
 const sliderImages = [shoesbg2, shoesbg3, shoesbg5];
 
@@ -203,7 +203,7 @@ const ShoesPage = () => {
   const fetchShoesDesigns = async () => {
     try {
       setLoading(true);
-      const response = await fetch('API_ENDPOINTS.DESIGNS?category=shoes&limit=100&sortBy=createdAt&sortOrder=desc');
+      const response = await fetch(`${API_ENDPOINTS.DESIGNS}?category=shoes&limit=100&sortBy=createdAt&sortOrder=desc`);
       const data = await response.json();
       
       if (data.success) {

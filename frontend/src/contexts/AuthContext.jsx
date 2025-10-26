@@ -152,15 +152,14 @@ export const AuthProvider = ({ children }) => {
 
   const updateProfile = async (profileData) => {
     try {
-      const response = await fetch('API_ENDPOINTS.PROFILE', {
-        method: 'PUT',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(profileData)
-      });
-      
+     const response = await fetch(API_ENDPOINTS.PROFILE, {
+  method: 'PUT',
+  headers: { 
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  },
+  body: JSON.stringify(profileData)
+});
       const data = await response.json();
       
       if (response.ok && data.success) {
