@@ -1,39 +1,16 @@
 {
-  "version": 2,
   "builds": [
     {
-      "src": "package.json",
+      "src": "frontend/package.json",
       "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
+      "config": { "distDir": "build" }
+    },
+    {
+      "src": "frontend/api/**/*.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ],
-  "env": {
-    "MONGODB_URI": "@mongodb-uri",
-    "JWT_SECRET": "@jwt-secret",
-    "JWT_EXPIRES_IN": "@jwt-expires-in",
-    "TWILIO_ACCOUNT_SID": "@twilio-account-sid",
-    "TWILIO_AUTH_TOKEN": "@twilio-auth-token",
-    "TWILIO_PHONE_NUMBER": "@twilio-phone-number",
-    "CLOUDINARY_CLOUD_NAME": "@cloudinary-cloud-name",
-    "CLOUDINARY_API_KEY": "@cloudinary-api-key",
-    "CLOUDINARY_API_SECRET": "@cloudinary-api-secret",
-    "FRONTEND_URL": "@frontend-url"
-  },
-  "functions": {
-    "api/**/*.js": {
-      "runtime": "nodejs18.x"
-    }
-  }
+    { "src": "/api/(.*)", "dest": "/api/$1.js" }
+  ]
 }
