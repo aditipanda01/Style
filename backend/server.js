@@ -23,11 +23,17 @@ const app = express();
 app.use(express.json());
 
 // Setup CORS
+const allowedOrigins = [
+  process.env.CLIENT_URL,          // e.g., Vercel frontend
+  "http://localhost:5173"          // for local dev
+].filter(Boolean);
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:5173",
+  origin: allowedOrigins,
   credentials: true
 }));
 
+// Security and rate limiting
 app.use(helmet());
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -39,25 +45,27 @@ app.use("/api/auth/login", loginRoute);
 app.use("/api/auth/register", registerRoute);
 app.use("/api/users", userRoutes);
 
-// Wrap design handler with router
-const designRouter = express.Router();
-designRouter.all("/", designHandler);
-app.use("/api/designs", designRouter);
+// Designs route
+app.use("/api/designs", designHandler); // designHandler should be an express.Router
 
 app.use("/api/collaborations", collaborationRoutes);
 app.use("/api/notifications", notificationsRoutes);
 
-// Connect to MongoDB and start server
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => {
-  console.log("✅ MongoDB connected");
-
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running at http://localhost:${PORT}`);
-  });
-}).catch(err => {
-  console.error("❌ DB connection error:", err);
+// Optional: root route to test deployment
+app.get("/", (req, res) => {
+  res.send("Backend is running 🚀");
 });
+
+// Connect to MongoDB and start server
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log("✅ MongoDB connected");
+
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running at http://localhost:${PORT}`);
+    });
+  })
+  .catch(err => {
+    console.error("❌ DB connection error:", err);
+  });
