@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "./contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import DesignSubmissionForm from "./components/DesignSubmissionForm";
+import { API_ENDPOINTS } from '../config/api';
 
 const Profile = () => {
   const { user, logout, isAuthenticated } = useAuth();

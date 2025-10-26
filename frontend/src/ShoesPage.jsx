@@ -4,6 +4,7 @@ import bgshoes from "./assets/bgshoes.jpeg";
 import shoesbg2 from "./assets/shoesbg2.jpg";
 import shoesbg3 from "./assets/shoesbg3.jpg";
 import shoesbg5 from "./assets/shoesbg5.jpeg";
+import { API_ENDPOINTS } from '../config/api';
 
 const sliderImages = [shoesbg2, shoesbg3, shoesbg5];
 

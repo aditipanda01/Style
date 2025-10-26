@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { API_ENDPOINTS } from '../config/api';
 
 const DesignSubmissionForm = ({ onClose, onSuccess }) => {
   const { user } = useAuth();
