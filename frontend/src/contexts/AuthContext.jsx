@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
     if (!token) return;
     
     try {
-      const response = await fetch('http://localhost:5000/api/users/profile', {
+      const response = await fetch('https://style-bcgu.onrender.com/api/users/profile', {
         headers: { 
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log('🔐 Attempting login...');
       
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch('https://style-bcgu.onrender.com/api/auth/login', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json'
@@ -98,7 +98,7 @@ export const AuthProvider = ({ children }) => {
       console.log('📝 Attempting registration...');
       console.log('📤 User data:', userData);
       
-      const response = await fetch('http://localhost:5000/api/auth/register', {
+      const response = await fetch('https://style-bcgu.onrender.com/api/auth/register', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json'
@@ -151,7 +151,7 @@ export const AuthProvider = ({ children }) => {
 
   const updateProfile = async (profileData) => {
     try {
-      const response = await fetch('http://localhost:5000/api/users/profile', {
+      const response = await fetch('https://style-bcgu.onrender.com/api/users/profile', {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',

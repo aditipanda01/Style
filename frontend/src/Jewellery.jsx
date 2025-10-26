@@ -202,7 +202,7 @@ const JewelleryPage = () => {
   const fetchJewelleryDesigns = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/designs?category=jewellery&limit=100&sortBy=createdAt&sortOrder=desc');
+      const response = await fetch('http://style-bcgu.onrender.com/api/designs?category=jewellery&limit=100&sortBy=createdAt&sortOrder=desc');
       const data = await response.json();
       
       if (data.success) {

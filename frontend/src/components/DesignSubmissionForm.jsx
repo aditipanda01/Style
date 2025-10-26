@@ -124,7 +124,7 @@ const DesignSubmissionForm = ({ onClose, onSuccess }) => {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("You must be logged in to submit designs");
 
-    const response = await fetch("http://localhost:5000/api/designs", {
+    const response = await fetch("http://style-bcgu.onrender.com/api/designs", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

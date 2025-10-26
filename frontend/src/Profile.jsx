@@ -17,7 +17,6 @@ const Profile = () => {
   const [showSubmitForm, setShowSubmitForm] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Load data when component mounts or user changes
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login-signup");
@@ -42,7 +41,7 @@ const Profile = () => {
   const loadStats = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch("http://localhost:5000/api/users/profile", {
+      const response = await fetch("https://style-bcgu.onrender.com/api/users/profile", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();
@@ -63,7 +62,7 @@ const Profile = () => {
     const token = localStorage.getItem("token");
     console.log('🔍 Fetching designs for user:', user._id);
     try {
-      const url = `http://localhost:5000/api/designs?userId=${user._id}&limit=100&sortBy=createdAt&sortOrder=desc`;
+      const url = `https://style-bcgu.onrender.com/api/designs?userId=${user._id}&limit=100&sortBy=createdAt&sortOrder=desc`;
       console.log('📡 API URL:', url);
       
       const response = await fetch(url, {
@@ -77,15 +76,14 @@ const Profile = () => {
       const data = await response.json();
       console.log('📦 Response data:', data);
       
-     if (data.success) {
-  const designs = Array.isArray(data.data)
-    ? data.data
-    : data.data?.designs || [];
-  setMyDesigns(designs);
-} else {
-  setMyDesigns([]);
-}
-
+      if (data.success) {
+        const designs = Array.isArray(data.data)
+          ? data.data
+          : data.data?.designs || [];
+        setMyDesigns(designs);
+      } else {
+        setMyDesigns([]);
+      }
     } catch (error) {
       console.error("❌ Failed to load designs:", error);
       setMyDesigns([]);
@@ -94,14 +92,8 @@ const Profile = () => {
 
   const handleDesignSuccess = async (newDesign) => {
     console.log('✅ New design submitted:', newDesign);
-    
-    // Reload all data
     await loadProfileData();
-    
-    // Close the form
     setShowSubmitForm(false);
-    
-    // Show success message
     alert('🎉 Design submitted successfully! Your design is now visible in your profile and category page.');
   };
 
@@ -135,7 +127,6 @@ const Profile = () => {
         paddingBottom: 60,
       }}
     >
-      {/* Profile Dashboard */}
       <div
         style={{
           background: "#232323",
@@ -271,7 +262,6 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* Submit New Design Button */}
       <button
         onClick={() => setShowSubmitForm(true)}
         style={{
@@ -289,7 +279,6 @@ const Profile = () => {
         + Submit New Design
       </button>
 
-      {/* My Submitted Designs */}
       <div style={{ width: "100%", maxWidth: 1200 }}>
         <h3 style={{ marginBottom: 16, fontSize: '1.5rem' }}>
           My Submitted Designs ({myDesigns.length})
@@ -420,7 +409,6 @@ const Profile = () => {
         )}
       </div>
 
-      {/* Design Submission Modal */}
       {showSubmitForm && (
         <DesignSubmissionForm
           onClose={() => setShowSubmitForm(false)}
