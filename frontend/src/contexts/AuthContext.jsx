@@ -95,6 +95,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     setLoading(true);
     try {
+          console.log('🔗 API URL:', API_ENDPOINTS.REGISTER); 
       console.log('📝 Attempting registration...');
       console.log('📤 User data:', userData);
       
