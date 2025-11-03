@@ -25,7 +25,8 @@ app.use(express.json());
 // Setup CORS
 const allowedOrigins = [
   process.env.CLIENT_URL,
-  "https://style-840q62hgc-aditipanda01s-projects.vercel.app",
+  "https://style-9hutx2mlj-aditipanda01s-projects.vercel.app", // ✅ new frontend
+  "https://style-840q62hgc-aditipanda01s-projects.vercel.app", // old one
   "https://style-bcgu.onrender.com",
   "http://localhost:5173"
 ].filter(Boolean);
@@ -34,6 +35,7 @@ app.use(cors({
   origin: allowedOrigins,
   credentials: true
 }));
+
 
 // Security and rate limiting
 app.use(helmet());
