@@ -5,7 +5,7 @@ import jbg from './assets/jbg.jpg';
 import jbg1 from './assets/jbg1.jpg';
 import jbg2 from './assets/jbg2.jpg';
 import jbg3 from './assets/jbg3.jpeg';
-import { API_ENDPOINTS } from '../config/api';
+import { API_ENDPOINTS } from './config/api';
 
 const sliderImages = [jbg, jbg1, jbg2, jbg3];
 
