@@ -1,6 +1,8 @@
 // API Configuration
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://style-bcgu.onrender.com';
 
+console.log('🌐 API Base URL:', API_BASE_URL); // Debug log
+
 export const API_ENDPOINTS = {
   // Auth
   LOGIN: `${API_BASE_URL}/api/auth/login`,

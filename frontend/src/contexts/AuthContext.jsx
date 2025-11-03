@@ -99,7 +99,7 @@ export const AuthProvider = ({ children }) => {
       console.log('📝 Attempting registration...');
       console.log('📤 User data:', userData);
       
-      const response = await fetch('API_ENDPOINTS.REGISTER', {
+      const response = await fetch(API_ENDPOINTS.REGISTER, {  // ✅ CORRECT - variable reference
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json'
