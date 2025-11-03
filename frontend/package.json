@@ -1,21 +1,8 @@
 {
+  "name": "style-frontend",
+  "version": "1.0.0",
+  "private": true,
   "dependencies": {
-    // ❌ REMOVE THESE (they're backend packages):
-    // "bcryptjs": "^3.0.2",
-    // "cloudinary": "^2.7.0",
-    // "cors": "^2.8.5",
-    // "dotenv": "^17.2.1",
-    // "express": "^5.1.0",
-    // "helmet": "^8.1.0",
-    // "joi": "^17.13.3",
-    // "jsonwebtoken": "^9.0.2",
-    // "mongoose": "^8.17.0",
-    // "multer": "^2.0.2",
-    // "nodemailer": "^7.0.5",
-    // "rate-limiter-flexible": "^7.2.0",
-    // "twilio": "^5.8.0"
-    
-    // ✅ KEEP ONLY THESE:
     "axios": "^1.11.0",
     "date-fns": "^4.1.0",
     "react": "^19.1.0",
@@ -27,5 +14,10 @@
     "react-slick": "^0.30.3",
     "react-toastify": "^11.0.5",
     "slick-carousel": "^1.8.1"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   }
 }
