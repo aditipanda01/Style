@@ -19,23 +19,31 @@ import notificationsRoutes from "./api/notifications/index.js";
 // Initialize express app
 const app = express();
 
-// Global middlewares
+// Parse incoming JSON
 app.use(express.json());
 
-// Setup CORS
+// -------------------- 🧩 FIXED CORS CONFIG --------------------
 const allowedOrigins = [
-  process.env.CLIENT_URL,
-  "https://style-9hutx2mlj-aditipanda01s-projects.vercel.app", // ✅ new frontend
-  "https://style-840q62hgc-aditipanda01s-projects.vercel.app", // old one
-  "https://style-bcgu.onrender.com",
-  "http://localhost:5173"
-].filter(Boolean);
+  "https://style-ten-ecru.vercel.app", // ✅ current frontend
+  "http://localhost:5173"              // for local testing
+];
 
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true
-}));
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
 
+  // Handle preflight requests immediately
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+  next();
+});
+// ---------------------------------------------------------------
 
 // Security and rate limiting
 app.use(helmet());
@@ -44,23 +52,20 @@ app.use(rateLimit({
   max: 100
 }));
 
-// Routes
+// -------------------- ROUTES --------------------
 app.use("/api/auth/login", loginRoute);
 app.use("/api/auth/register", registerRoute);
 app.use("/api/users", userRoutes);
-
-// Designs route
-app.use("/api/designs", designHandler); // designHandler should be an express.Router
-
+app.use("/api/designs", designHandler);
 app.use("/api/collaborations", collaborationRoutes);
 app.use("/api/notifications", notificationsRoutes);
 
-// Optional: root route to test deployment
+// Root route for testing
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
 
-// Connect to MongoDB and start server
+// -------------------- DATABASE CONNECTION --------------------
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("✅ MongoDB connected");
