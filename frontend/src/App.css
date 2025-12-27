@@ -348,3 +348,126 @@
   border-top: 1px solid #232323;
   margin-top: 0;
 }
+
+/* ===== Responsive Design Styles ===== */
+
+/* Mobile devices (phones, 600px and down) */
+@media (max-width: 600px) {
+  /* Design cards - stack vertically on mobile */
+  .design-card-container {
+    flex-direction: column !important;
+    max-width: 100% !important;
+    padding: 16px !important;
+    margin: 8px !important;
+  }
+  
+  /* Image in card - full width on mobile */
+  .design-card-image {
+    width: 100% !important;
+    height: 200px !important;
+    margin-right: 0 !important;
+    margin-bottom: 12px !important;
+  }
+  
+  /* Profile picture container - adjust padding */
+  .design-card-content {
+    padding-left: 80px !important;
+    min-height: 80px !important;
+  }
+  
+  /* Profile picture - smaller on mobile */
+  .design-card-avatar {
+    width: 60px !important;
+    height: 60px !important;
+  }
+  
+  .design-card-avatar img {
+    width: 55px !important;
+    height: 55px !important;
+  }
+  
+  /* Category page grids - single column on mobile */
+  [style*="gridTemplateColumns"] {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    padding: 0 10px !important;
+  }
+  
+  /* Slider buttons - smaller on mobile */
+  button[style*="position: absolute"][style*="left: 24"],
+  button[style*="position: absolute"][style*="right: 24"] {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 16px !important;
+  }
+  
+  /* Feature circle - smaller on mobile */
+  [style*="width: 320"][style*="height: 320"] {
+    width: 200px !important;
+    height: 200px !important;
+  }
+  
+  /* Banner text - smaller on mobile */
+  [style*="fontSize: 44"] {
+    font-size: 28px !important;
+    letter-spacing: 6px !important;
+  }
+  
+  [style*="fontSize: 20"][style*="letterSpacing: 2"] {
+    font-size: 14px !important;
+  }
+  
+  /* Username - smaller on mobile */
+  [style*="fontSize: 24"][style*="fontFamily: 'Cormorant Garamond'"] {
+    font-size: 18px !important;
+  }
+  
+  /* Buttons - smaller on mobile */
+  [style*="fontSize: 24"][style*="fontWeight: 700"] {
+    font-size: 20px !important;
+  }
+  
+  /* Slider height - adjust on mobile */
+  [style*="height: '60vh'"],
+  [style*="height: 60vh"] {
+    height: 40vh !important;
+    min-height: 40vh !important;
+  }
+  
+  /* Profile stats - stack on mobile */
+  [style*="flexDirection: 'row'"][style*="gap: 32"] {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+}
+
+/* Tablet devices (600px to 900px) */
+@media (min-width: 601px) and (max-width: 900px) {
+  [style*="gridTemplateColumns"][style*="repeat(auto-fit"] {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 350px)) !important;
+    gap: 20px !important;
+  }
+  
+  [style*="width: 320"][style*="height: 320"] {
+    width: 250px !important;
+    height: 250px !important;
+  }
+  
+  .design-card-container {
+    max-width: 350px !important;
+  }
+}
+
+/* Desktop devices (900px and up) */
+@media (min-width: 901px) {
+  [style*="gridTemplateColumns"][style*="repeat(auto-fit"] {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 400px)) !important;
+  }
+}
+
+/* Large screens (1200px and up) */
+@media (min-width: 1200px) {
+  [style*="gridTemplateColumns"][style*="repeat(auto-fit"] {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 450px)) !important;
+  }
+}

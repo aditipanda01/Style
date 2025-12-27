@@ -141,6 +141,7 @@ function DesignerInspirationCard({ design, onUpdate }) {
   const { isAuthenticated, token, user } = useAuth();
   const primaryImage = design.images?.find(img => img.isPrimary) || design.images?.[0];
   const designerPhoto = design.designerPhoto;
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
   
   const [isLiked, setIsLiked] = useState(design.isLiked || false);
   const [likesCount, setLikesCount] = useState(design.likesCount || 0);
@@ -151,6 +152,12 @@ function DesignerInspirationCard({ design, onUpdate }) {
   const [commentText, setCommentText] = useState('');
   const [loading, setLoading] = useState(false);
   const [loadingComments, setLoadingComments] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 600);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleLike = async () => {
     if (!isAuthenticated) {
@@ -320,28 +327,29 @@ function DesignerInspirationCard({ design, onUpdate }) {
   };
 
   return (
-    <div style={{
+    <div className="design-card-container" style={{
       background: '#8c8c8c',
       borderRadius: 5,
       boxShadow: '0 6px 24px #0001',
-      width: 540,
-      padding: 32,
+      width: '100%',
+      maxWidth: 400,
+      padding: 20,
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'flex-start',
       fontFamily: 'Montserrat, Arial, sans-serif',
       position: 'relative',
-      margin: 24
+      margin: 12
     }}>
-      <div style={{
-        width: 200,
-        height: 400,
+      <div className="design-card-image" style={{
+        width: 140,
+        height: 280,
         borderRadius: 5,
         background: '#e5e1da',
         border: '2px solid #cfc9be',
         overflow: 'hidden',
         position: 'relative',
-        marginRight: 32,
+        marginRight: 20,
         flexShrink: 0
       }}>
         {primaryImage && <img src={primaryImage.url} alt="Shoes" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
@@ -366,7 +374,7 @@ function DesignerInspirationCard({ design, onUpdate }) {
         }}>
           <div style={{
             fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 36,
+            fontSize: 24,
             fontWeight: 500,
             color: '#222'
           }}>
@@ -377,26 +385,26 @@ function DesignerInspirationCard({ design, onUpdate }) {
           )}
         </div>
 
-        <div style={{
+        <div className="design-card-content" style={{
           background: 'rgba(237, 231, 223, 0.5)',
           borderRadius: 5,
-          padding: '18px 18px 18px 140px',
+          padding: '12px 12px 12px 100px',
           position: 'relative',
-          minHeight: 140,
+          minHeight: 100,
           marginBottom: 12,
           boxShadow: '0 2px 8px #0001',
           display: 'flex',
           alignItems: 'center',
         }}>
-          <div style={{
+          <div className="design-card-avatar" style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             position: 'absolute',
-            left: 14,
-            top: 18,
-            width: 120,
-            height: 120,
+            left: 10,
+            top: 12,
+            width: 80,
+            height: 80,
             borderRadius: '50%',
             background: 'rgba(237, 231, 223, 0.5)',
           }}>
@@ -405,8 +413,8 @@ function DesignerInspirationCard({ design, onUpdate }) {
                 src={designerPhoto.url}
                 alt="Designer"
                 style={{
-                  width: 110,
-                  height: 110,
+                  width: 75,
+                  height: 75,
                   borderRadius: '50%',
                   objectFit: 'cover',
                   border: '2px solid #fff',
@@ -425,7 +433,7 @@ function DesignerInspirationCard({ design, onUpdate }) {
             width: '100%',
             marginLeft: 24,
           }}>
-            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 12 }}>
+            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 }}>
               <button
                 onClick={handleLike}
                 disabled={loading}
@@ -433,18 +441,18 @@ function DesignerInspirationCard({ design, onUpdate }) {
                   background: 'none',
                   border: 'none',
                   color: isLiked ? '#ff6b6b' : '#222',
-                  fontSize: 32,
+                  fontSize: 24,
                   fontWeight: 700,
                   cursor: loading ? 'not-allowed' : 'pointer',
                   padding: 0,
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 8,
+                  gap: 4,
                   opacity: loading ? 0.6 : 1
                 }}
                 title={`${likesCount} likes`}
               >
-                {isLiked ? '❤️' : '♡'} {likesCount > 0 && <span style={{ fontSize: 16 }}>{likesCount}</span>}
+                {isLiked ? '❤️' : '♡'} {likesCount > 0 && <span style={{ fontSize: 12 }}>{likesCount}</span>}
               </button>
               <button
                 onClick={handleCommentClick}
@@ -452,16 +460,16 @@ function DesignerInspirationCard({ design, onUpdate }) {
                   background: 'none',
                   border: 'none',
                   color: '#222',
-                  fontSize: 32,
+                  fontSize: 24,
                   cursor: 'pointer',
                   padding: 0,
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 8
+                  gap: 4
                 }}
                 title={`${commentsCount} comments`}
               >
-                🗨️ {commentsCount > 0 && <span style={{ fontSize: 16 }}>{commentsCount}</span>}
+                🗨️ {commentsCount > 0 && <span style={{ fontSize: 12 }}>{commentsCount}</span>}
               </button>
               <button
                 onClick={handleShare}
@@ -470,20 +478,20 @@ function DesignerInspirationCard({ design, onUpdate }) {
                   background: 'none',
                   border: 'none',
                   color: '#222',
-                  fontSize: 32,
+                  fontSize: 24,
                   cursor: loading ? 'not-allowed' : 'pointer',
                   padding: 0,
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 8,
+                  gap: 4,
                   opacity: loading ? 0.6 : 1
                 }}
                 title={`${sharesCount} shares`}
               >
-                🔗 {sharesCount > 0 && <span style={{ fontSize: 16 }}>{sharesCount}</span>}
+                🔗 {sharesCount > 0 && <span style={{ fontSize: 12 }}>{sharesCount}</span>}
               </button>
             </div>
-            <div style={{ fontSize: 15, color: '#222', fontWeight: 400, textAlign: 'left', width: '100%' }}>
+            <div style={{ fontSize: 12, color: '#222', fontWeight: 400, textAlign: 'left', width: '100%', lineHeight: 1.4 }}>
               {design.inspiration || design.description || design.tags?.join(', ') || 'Stunning footwear design'}
             </div>
           </div>
@@ -666,7 +674,16 @@ const ShoesPage = () => {
         <img src={bgshoes} alt="Shoe Feature" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 40, justifyItems: 'center', width: '100%', marginTop: 120, marginBottom: 80 }}>
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 400px))', 
+        gap: 24, 
+        justifyContent: 'center',
+        width: '100%', 
+        padding: '0 20px',
+        marginTop: 120, 
+        marginBottom: 80 
+      }}>
         {loading ? (
           <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400, color: '#fff', fontSize: '1.2rem' }}>
             Loading shoes designs...
