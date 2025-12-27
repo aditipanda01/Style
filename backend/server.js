@@ -124,17 +124,13 @@ designsRouter.use("/:id/comment", async (req, res, next) => {
   }
 });
 // Delete design route - must be before the general handler, only handles DELETE
-designsRouter.use("/:id", async (req, res, next) => {
-  if (req.method === 'DELETE') {
-    try {
-      console.log('🎯 Delete design route matched:', req.method, req.originalUrl, 'Params:', req.params);
-      await designDeleteHandler(req, res);
-    } catch (error) {
-      console.error('❌ Error in delete handler:', error);
-      next(error);
-    }
-  } else {
-    next(); // Pass to next handler if not DELETE
+designsRouter.delete("/:id", async (req, res, next) => {
+  try {
+    console.log('🎯 Delete design route matched:', req.method, req.originalUrl, 'Params:', req.params);
+    await designDeleteHandler(req, res);
+  } catch (error) {
+    console.error('❌ Error in delete handler:', error);
+    next(error);
   }
 });
 designsRouter.use("/", designHandler);
