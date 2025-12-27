@@ -124,6 +124,45 @@ const Profile = () => {
     alert('🎉 Design submitted successfully! Your design is now visible in your profile and category page.');
   };
 
+  const handleDeleteDesign = async (designId) => {
+    if (!window.confirm('Are you sure you want to delete this design? This action cannot be undone.')) {
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert('Please login to delete designs');
+      return;
+    }
+
+    try {
+      const response = await fetch(API_ENDPOINTS.DESIGN_DELETE(designId), {
+        method: 'DELETE',
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        console.log('✅ Design deleted successfully');
+        // Remove the design from the local state immediately
+        setMyDesigns(prev => prev.filter(design => design._id !== designId));
+        // Reload stats to update the count
+        await loadStats();
+        alert('✅ Design deleted successfully!');
+      } else {
+        console.error('❌ Delete failed:', data);
+        alert(data.error?.message || 'Failed to delete design');
+      }
+    } catch (error) {
+      console.error('❌ Error deleting design:', error);
+      alert('Failed to delete design. Please try again.');
+    }
+  };
+
   if (!user) return null;
 
   if (loading && myDesigns.length === 0) {
@@ -408,13 +447,38 @@ const Profile = () => {
                         color: "#ccc",
                         display: 'flex',
                         justifyContent: 'space-between',
+                        alignItems: 'center',
                         paddingTop: '0.75rem',
                         borderTop: '1px solid #444'
                       }}
                     >
-                      <span>💖 {design.likesCount || 0}</span>
-                      <span>💾 {design.savesCount || 0}</span>
-                      <span>👁️ {design.views || 0}</span>
+                      <div style={{ display: 'flex', gap: '1rem' }}>
+                        <span>💖 {design.likesCount || 0}</span>
+                        <span>💾 {design.savesCount || 0}</span>
+                        <span>👁️ {design.views || 0}</span>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteDesign(design._id);
+                        }}
+                        style={{
+                          background: '#dc3545',
+                          color: '#fff',
+                          border: 'none',
+                          borderRadius: 6,
+                          padding: '6px 12px',
+                          cursor: 'pointer',
+                          fontSize: '0.85rem',
+                          fontWeight: 600,
+                          transition: 'background 0.2s'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = '#c82333'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = '#dc3545'}
+                        title="Delete this design"
+                      >
+                        🗑️ Delete
+                      </button>
                     </div>
                   </div>
                 </div>

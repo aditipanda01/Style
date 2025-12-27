@@ -18,6 +18,7 @@ import designLikeHandler from "./api/designs/[id]/like.js";
 import designSaveHandler from "./api/designs/[id]/save.js";
 import designShareHandler from "./api/designs/[id]/share.js";
 import designCommentHandler from "./api/designs/[id]/comment.js";
+import designDeleteHandler from "./api/designs/[id]/index.js";
 import collaborationRoutes from "./api/collaborations/index.js";
 import notificationsRoutes from "./api/notifications/index.js";
 
@@ -120,6 +121,20 @@ designsRouter.use("/:id/comment", async (req, res, next) => {
   } catch (error) {
     console.error('❌ Error in comment handler:', error);
     next(error);
+  }
+});
+// Delete design route - must be before the general handler, only handles DELETE
+designsRouter.use("/:id", async (req, res, next) => {
+  if (req.method === 'DELETE') {
+    try {
+      console.log('🎯 Delete design route matched:', req.method, req.originalUrl, 'Params:', req.params);
+      await designDeleteHandler(req, res);
+    } catch (error) {
+      console.error('❌ Error in delete handler:', error);
+      next(error);
+    }
+  } else {
+    next(); // Pass to next handler if not DELETE
   }
 });
 designsRouter.use("/", designHandler);

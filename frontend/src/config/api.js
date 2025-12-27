@@ -43,6 +43,7 @@ export const API_ENDPOINTS = {
   DESIGN_SAVE: (id) => `${API_BASE_URL}/api/designs/${id}/save`,
   DESIGN_SHARE: (id) => `${API_BASE_URL}/api/designs/${id}/share`,
   DESIGN_COMMENT: (id) => `${API_BASE_URL}/api/designs/${id}/comment`,
+  DESIGN_DELETE: (id) => `${API_BASE_URL}/api/designs/${id}`,
   
   // Collaborations
   COLLABORATIONS: `${API_BASE_URL}/api/collaborations`,
