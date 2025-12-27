@@ -12,6 +12,7 @@ dotenv.config();
 import loginRoute from "./api/auth/login.js";
 import registerRoute from "./api/auth/register.js";
 import userRoutes from "./api/users/profile.js";
+import userFollowHandler from "./api/users/[id]/follow.js";
 import designHandler from "./api/designs/index.js";
 import designLikeHandler from "./api/designs/[id]/like.js";
 import designSaveHandler from "./api/designs/[id]/save.js";
@@ -69,7 +70,19 @@ app.use(rateLimit({
 // -------------------- ROUTES --------------------
 app.use("/api/auth/login", loginRoute);
 app.use("/api/auth/register", registerRoute);
-app.use("/api/users", userRoutes);
+// User routes
+const usersRouter = express.Router();
+usersRouter.use("/:id/follow", async (req, res, next) => {
+  try {
+    console.log('🎯 Follow route matched:', req.method, req.originalUrl, 'Params:', req.params);
+    await userFollowHandler(req, res);
+  } catch (error) {
+    console.error('❌ Error in follow handler:', error);
+    next(error);
+  }
+});
+usersRouter.use("/", userRoutes);
+app.use("/api/users", usersRouter);
 
 // Design routes - register specific routes first, then general handler
 // Use router.use() to match all methods for sub-routes

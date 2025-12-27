@@ -10,9 +10,8 @@ const Profile = () => {
   const [stats, setStats] = useState({
     designsCount: 0,
     totalLikes: 0,
-    totalSaved: 0,
-    totalShared: 0,
-    followers: 0,
+    followersCount: 0,
+    followingCount: 0,
   });
   const [myDesigns, setMyDesigns] = useState([]);
   const [showSubmitForm, setShowSubmitForm] = useState(false);
@@ -82,6 +81,11 @@ const Profile = () => {
           ? data.data
           : data.data?.designs || [];
         setMyDesigns(designs);
+        // Update designs count from actual designs loaded
+        setStats(prev => ({
+          ...prev,
+          designsCount: designs.length
+        }));
       } else {
         setMyDesigns([]);
       }
@@ -233,32 +237,20 @@ const Profile = () => {
               textAlign: "center",
             }}
           >
-            <div style={{ fontSize: 28, fontWeight: 700 }}>{stats.totalSaved}</div>
-            <div>Saved</div>
-          </div>
-          <div
-            style={{
-              background: "#333",
-              borderRadius: 8,
-              padding: 24,
-              minWidth: 120,
-              textAlign: "center",
-            }}
-          >
-            <div style={{ fontSize: 28, fontWeight: 700 }}>{stats.totalShared}</div>
-            <div>Shared</div>
-          </div>
-          <div
-            style={{
-              background: "#333",
-              borderRadius: 8,
-              padding: 24,
-              minWidth: 120,
-              textAlign: "center",
-            }}
-          >
-            <div style={{ fontSize: 28, fontWeight: 700 }}>{stats.followers}</div>
+            <div style={{ fontSize: 28, fontWeight: 700 }}>{stats.followersCount || 0}</div>
             <div>Followers</div>
+          </div>
+          <div
+            style={{
+              background: "#333",
+              borderRadius: 8,
+              padding: 24,
+              minWidth: 120,
+              textAlign: "center",
+            }}
+          >
+            <div style={{ fontSize: 28, fontWeight: 700 }}>{stats.followingCount || 0}</div>
+            <div>Following</div>
           </div>
         </div>
       </div>

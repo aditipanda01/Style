@@ -35,6 +35,7 @@ export const API_ENDPOINTS = {
   
   // User
   PROFILE: `${API_BASE_URL}/api/users/profile`,
+  USER_FOLLOW: (id) => `${API_BASE_URL}/api/users/${id}/follow`,
   
   // Designs
   DESIGNS: `${API_BASE_URL}/api/designs`,

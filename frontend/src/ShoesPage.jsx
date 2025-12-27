@@ -7,6 +7,74 @@ import shoesbg5 from "./assets/shoesbg5.jpeg";
 import { API_ENDPOINTS } from './config/api';
 import { useAuth } from './contexts/AuthContext';
 
+// Follow Button Component
+function FollowButton({ userId }) {
+  const { isAuthenticated, token, user } = useAuth();
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // Check if current user is following this user
+    if (user && user.following) {
+      setIsFollowing(user.following.some(id => 
+        id === userId || (typeof id === 'object' && id._id === userId)
+      ));
+    }
+  }, [user, userId]);
+
+  const handleFollow = async () => {
+    if (!isAuthenticated) {
+      alert('Please login to follow users');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const method = isFollowing ? 'DELETE' : 'POST';
+      const response = await fetch(API_ENDPOINTS.USER_FOLLOW(userId), {
+        method,
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setIsFollowing(!isFollowing);
+      } else {
+        const error = await response.json();
+        alert(error.error?.message || 'Failed to follow/unfollow user');
+      }
+    } catch (error) {
+      console.error('Follow error:', error);
+      alert('Failed to follow/unfollow user');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleFollow}
+      disabled={loading}
+      style={{
+        background: isFollowing ? '#666' : '#222',
+        color: '#fff',
+        border: 'none',
+        borderRadius: 6,
+        padding: '8px 16px',
+        cursor: loading ? 'not-allowed' : 'pointer',
+        fontSize: 14,
+        fontWeight: 600,
+        opacity: loading ? 0.6 : 1
+      }}
+    >
+      {loading ? '...' : isFollowing ? 'Following' : '+ Follow'}
+    </button>
+  );
+}
+
 const sliderImages = [shoesbg2, shoesbg3, shoesbg5];
 
 function ShoesAllureBanner() {
@@ -70,7 +138,7 @@ function ShoesAllureBanner() {
 }
 
 function DesignerInspirationCard({ design, onUpdate }) {
-  const { isAuthenticated, token } = useAuth();
+  const { isAuthenticated, token, user } = useAuth();
   const primaryImage = design.images?.find(img => img.isPrimary) || design.images?.[0];
   const designerPhoto = design.designerPhoto;
   
@@ -291,13 +359,22 @@ function DesignerInspirationCard({ design, onUpdate }) {
 
       <div style={{ flex: 1, position: 'relative' }}>
         <div style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: 36,
-          fontWeight: 500,
-          color: '#222',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
           marginBottom: 18
         }}>
-          {design.user?.username || `${design.user?.firstName} ${design.user?.lastName}`}
+          <div style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: 36,
+            fontWeight: 500,
+            color: '#222'
+          }}>
+            {design.user?.username || `${design.user?.firstName} ${design.user?.lastName}`}
+          </div>
+          {design.user?._id && design.user._id !== user?._id && (
+            <FollowButton userId={design.user._id} />
+          )}
         </div>
 
         <div style={{

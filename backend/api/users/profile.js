@@ -88,8 +88,8 @@ async function getUserProfile(req, res) {
           });
         }
 
-        // Get user statistics
-        const designsCount = await Design.countDocuments({ userId, isPublic: true });
+        // Get user statistics - count ALL designs (not just public)
+        const designsCount = await Design.countDocuments({ userId });
         const collaborationsCount = await Collaboration.countDocuments({
           $or: [
             { designerId: userId },
