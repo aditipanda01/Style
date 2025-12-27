@@ -114,6 +114,25 @@ const designSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    comments: [
+      {
+        userId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        text: {
+          type: String,
+          required: true,
+          maxlength: 500,
+          trim: true,
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );
@@ -131,6 +150,9 @@ designSchema.virtual("likesCount").get(function () {
 });
 designSchema.virtual("savesCount").get(function () {
   return this.saves ? this.saves.length : 0;
+});
+designSchema.virtual("commentsCount").get(function () {
+  return this.comments ? this.comments.length : 0;
 });
 designSchema.virtual("primaryImage").get(function () {
   if (this.images && this.images.length > 0) {

@@ -48,6 +48,35 @@ const querySchema = Joi.object({
 // ✅ Main Handler
 // ============================================
 export default async function handler(req, res) {
+  // Log all requests to designs endpoint
+  const path = req.path || req.url || req.originalUrl || '';
+  console.log('📦 Designs main handler:', req.method, path, req.originalUrl);
+  
+  // Skip if this is a sub-route (should be handled by specific handlers)
+  // Check both path and originalUrl to catch all cases
+  const isSubRoute = path.includes('/like') || 
+                     path.includes('/share') || 
+                     path.includes('/comment') || 
+                     path.includes('/save') ||
+                     (req.originalUrl && (req.originalUrl.includes('/like') || 
+                                          req.originalUrl.includes('/share') || 
+                                          req.originalUrl.includes('/comment') || 
+                                          req.originalUrl.includes('/save')));
+  
+  if (isSubRoute) {
+    console.log('⚠️ Sub-route detected in main handler! Path:', path, 'OriginalUrl:', req.originalUrl);
+    console.log('⚠️ This means the router setup is not working. Check server.js routes.');
+    return res.status(404).json({
+      success: false,
+      error: {
+        code: 'NOT_FOUND',
+        message: 'Route not found. Please use /api/designs/:id/like, /share, /comment, or /save endpoints.',
+        path: path,
+        originalUrl: req.originalUrl
+      }
+    });
+  }
+  
   try {
     await connectDB();
 
@@ -140,6 +169,7 @@ async function getDesigns(req, res) {
             $addFields: {
               likesCount: { $size: { $ifNull: ["$likes", []] } },
               savesCount: { $size: { $ifNull: ["$saves", []] } },
+              commentsCount: { $size: { $ifNull: ["$comments", []] } },
             },
           },
           { $sort: sort },
@@ -218,15 +248,17 @@ async function createDesign(req, res) {
     authenticateToken(req, res, async () => {
       try {
         console.log('📥 Received design data:', JSON.stringify(req.body, null, 2));
+        console.log('📥 Request URL:', req.originalUrl, 'Path:', req.path);
 
         const { error, value } = createDesignSchema.validate(req.body);
         if (error) {
           console.log("❌ Design validation failed:", error.details);
+          console.log("❌ This might be a misrouted request to /api/designs/:id/like, /share, or /comment");
           return res.status(400).json({
             success: false,
             error: {
               code: "VALIDATION_ERROR",
-              message: "Validation failed",
+              message: "Validation failed - This endpoint is for creating designs. Did you mean to use /api/designs/:id/like, /share, or /comment?",
               details: error.details.map((detail) => ({
                 field: detail.path.join("."),
                 message: detail.message,

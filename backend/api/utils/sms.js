@@ -1,4 +1,4 @@
-const twilio = require('twilio');
+import twilio from 'twilio';
 
 // Initialize Twilio client
 const client = twilio(
@@ -124,7 +124,7 @@ const getSMSStatus = async (messageSid) => {
   }
 };
 
-module.exports = {
+export {
   sendSMS,
   sendCollaborationRequestSMS,
   sendCollaborationAcceptedSMS,

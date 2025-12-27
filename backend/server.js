@@ -13,8 +13,15 @@ import loginRoute from "./api/auth/login.js";
 import registerRoute from "./api/auth/register.js";
 import userRoutes from "./api/users/profile.js";
 import designHandler from "./api/designs/index.js";
+import designLikeHandler from "./api/designs/[id]/like.js";
+import designSaveHandler from "./api/designs/[id]/save.js";
+import designShareHandler from "./api/designs/[id]/share.js";
+import designCommentHandler from "./api/designs/[id]/comment.js";
 import collaborationRoutes from "./api/collaborations/index.js";
 import notificationsRoutes from "./api/notifications/index.js";
+
+// Create router for designs with sub-routes
+const designsRouter = express.Router();
 
 // Initialize express app
 const app = express();
@@ -30,8 +37,14 @@ const allowedOrigins = [
 
 app.use((req, res, next) => {
   const origin = req.headers.origin;
+  console.log('🌐 Request from origin:', origin, 'Method:', req.method, 'Path:', req.path);
+  
   if (allowedOrigins.includes(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
+  } else if (origin && origin.includes('localhost')) {
+    // Allow any localhost origin for development
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    console.log('✅ Allowed localhost origin:', origin);
   }
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
@@ -39,6 +52,7 @@ app.use((req, res, next) => {
 
   // Handle preflight requests immediately
   if (req.method === "OPTIONS") {
+    console.log('✈️ Preflight request handled');
     return res.sendStatus(204);
   }
   next();
@@ -56,7 +70,48 @@ app.use(rateLimit({
 app.use("/api/auth/login", loginRoute);
 app.use("/api/auth/register", registerRoute);
 app.use("/api/users", userRoutes);
-app.use("/api/designs", designHandler);
+
+// Design routes - register specific routes first, then general handler
+// Use router.use() to match all methods for sub-routes
+designsRouter.use("/:id/like", async (req, res, next) => {
+  try {
+    console.log('🎯 Like route matched:', req.method, req.originalUrl, 'Params:', req.params, 'ID:', req.params.id);
+    await designLikeHandler(req, res);
+  } catch (error) {
+    console.error('❌ Error in like handler:', error);
+    next(error);
+  }
+});
+designsRouter.use("/:id/save", async (req, res, next) => {
+  try {
+    console.log('🎯 Save route matched:', req.method, req.originalUrl, 'Params:', req.params);
+    await designSaveHandler(req, res);
+  } catch (error) {
+    console.error('❌ Error in save handler:', error);
+    next(error);
+  }
+});
+designsRouter.use("/:id/share", async (req, res, next) => {
+  try {
+    console.log('🎯 Share route matched:', req.method, req.originalUrl, 'Params:', req.params);
+    await designShareHandler(req, res);
+  } catch (error) {
+    console.error('❌ Error in share handler:', error);
+    next(error);
+  }
+});
+designsRouter.use("/:id/comment", async (req, res, next) => {
+  try {
+    console.log('🎯 Comment route matched:', req.method, req.originalUrl, 'Params:', req.params);
+    await designCommentHandler(req, res);
+  } catch (error) {
+    console.error('❌ Error in comment handler:', error);
+    next(error);
+  }
+});
+designsRouter.use("/", designHandler);
+app.use("/api/designs", designsRouter);
+
 app.use("/api/collaborations", collaborationRoutes);
 app.use("/api/notifications", notificationsRoutes);
 

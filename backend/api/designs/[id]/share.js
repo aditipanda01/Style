@@ -1,8 +1,8 @@
-const connectDB = require('../../utils/db');
-const Design = require('../../../models/Design');
-const User = require('../../../models/User');
-const Notification = require('../../../models/Notification');
-const { authenticateToken } = require('../../utils/auth');
+import connectDB from '../../utils/db.js';
+import Design from '../../../models/Design.js';
+import User from '../../../models/User.js';
+import Notification from '../../../models/Notification.js';
+import { authenticateToken } from '../../utils/auth.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -21,7 +21,18 @@ export default async function handler(req, res) {
     return new Promise((resolve) => {
       authenticateToken(req, res, async () => {
         try {
-          const { id: designId } = req.query;
+          const designId = req.params.id || req.query.id;
+          
+          if (!designId) {
+            return res.status(400).json({
+              success: false,
+              error: {
+                code: 'VALIDATION_ERROR',
+                message: 'Design ID is required'
+              }
+            });
+          }
+          
           const userId = req.userId;
 
           // Find the design

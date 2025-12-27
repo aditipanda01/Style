@@ -17,6 +17,7 @@ const notificationSchema = new mongoose.Schema({
       'design_liked',
       'design_saved',
       'design_shared',
+      'design_commented',
       'new_message'
     ],
     required: true
