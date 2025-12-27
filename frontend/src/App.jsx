@@ -1483,29 +1483,6 @@ function DressDesignCard({ design, onUpdate }) {
 }
 
 function DressPage() {
-  const [designs, setDesigns] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchDressDesigns();
-  }, []);
-
-  const fetchDressDesigns = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(`${API_ENDPOINTS.DESIGNS}?category=dress&limit=100&sortBy=createdAt&sortOrder=desc`);
-      const data = await response.json();
-      
-      if (data.success) {
-        console.log('✅ Fetched dress designs:', data.data.designs.length);
-        setDesigns(data.data.designs);
-      }
-    } catch (error) {
-      console.error('❌ Failed to fetch dress designs:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <>
@@ -1549,24 +1526,14 @@ function DressPage() {
         }}>
           <img src={dressFeature} alt="Dress Feature" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </div>
-        {/* Designer Inspiration Grid - Now using API designs */}
+        {/* Designer Inspiration Grid - Empty state */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 40, justifyItems: 'center', width: '100%', marginTop: 120, marginBottom: 80 }}>
-          {loading ? (
-            <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400, color: '#fff', fontSize: '1.2rem' }}>
-              Loading dress designs...
-            </div>
-          ) : designs.length === 0 ? (
-            <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400, color: '#fff', fontSize: '1.2rem', flexDirection: 'column', gap: '1rem' }}>
-              <div>No dress designs found yet.</div>
-              <Link to="/profile" style={{ color: '#007bff', textDecoration: 'none' }}>
-                Submit the first dress design!
-              </Link>
-            </div>
-          ) : (
-            designs.map((design) => (
-              <DressDesignCard key={design._id} design={design} onUpdate={fetchDressDesigns} />
-            ))
-          )}
+          <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400, color: '#fff', fontSize: '1.2rem', flexDirection: 'column', gap: '1rem' }}>
+            <div>No dress designs found yet.</div>
+            <Link to="/profile" style={{ color: '#007bff', textDecoration: 'none' }}>
+              Submit your first design here
+            </Link>
+          </div>
         </div>
         {/* Footer */}
         <footer style={{ width: '100%', background: '#222', color: '#fff', textAlign: 'center', padding: '32px 0 20px 0', fontFamily: 'Montserrat, Arial, sans-serif', fontSize: 16, letterSpacing: 1, marginTop: 40 }}>
