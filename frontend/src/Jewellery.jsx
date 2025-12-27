@@ -608,6 +608,12 @@ function DesignerInspirationCard({ design, onUpdate }) {
 
 const JewelleryPage = () => {
   const [current, setCurrent] = useState(0);
+  const [designs, setDesigns] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchJewelleryDesigns();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -615,6 +621,23 @@ const JewelleryPage = () => {
     }, 3000);
     return () => clearInterval(interval);
   }, []);
+
+  const fetchJewelleryDesigns = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_ENDPOINTS.DESIGNS}?category=jewellery&limit=100&sortBy=createdAt&sortOrder=desc`);
+      const data = await response.json();
+      
+      if (data.success) {
+        console.log('✅ Fetched jewellery designs:', data.data.designs.length);
+        setDesigns(data.data.designs);
+      }
+    } catch (error) {
+      console.error('❌ Failed to fetch jewellery designs:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const prevSlide = () => setCurrent((current - 1 + sliderImages.length) % sliderImages.length);
   const nextSlide = () => setCurrent((current + 1) % sliderImages.length);
@@ -661,12 +684,22 @@ const JewelleryPage = () => {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 40, justifyItems: 'center', width: '100%', marginTop: 120, marginBottom: 80 }}>
-        <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400, color: '#fff', fontSize: '1.2rem', flexDirection: 'column', gap: '1rem' }}>
-          <div>No jewellery designs found yet.</div>
-          <Link to="/profile" style={{ color: '#007bff', textDecoration: 'none' }}>
-            Submit the first jewellery design!
-          </Link>
-        </div>
+        {loading ? (
+          <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400, color: '#fff', fontSize: '1.2rem' }}>
+            Loading jewellery designs...
+          </div>
+        ) : designs.length === 0 ? (
+          <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400, color: '#fff', fontSize: '1.2rem', flexDirection: 'column', gap: '1rem' }}>
+            <div>No jewellery designs found yet.</div>
+            <Link to="/profile" style={{ color: '#007bff', textDecoration: 'none' }}>
+              Submit the first jewellery design!
+            </Link>
+          </div>
+        ) : (
+          designs.map((design) => (
+            <DesignerInspirationCard key={design._id} design={design} onUpdate={fetchJewelleryDesigns} />
+          ))
+        )}
       </div>
 
       <footer style={{ width: '100%', background: '#222', color: '#fff', textAlign: 'center', padding: '32px 0 20px 0', fontFamily: 'Montserrat, Arial, sans-serif', fontSize: 16, letterSpacing: 1, marginTop: 40 }}>

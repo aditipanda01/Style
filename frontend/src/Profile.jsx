@@ -60,6 +60,11 @@ const Profile = () => {
       return;
     }
     const token = localStorage.getItem("token");
+    if (!token) {
+      console.log('❌ No token found');
+      setMyDesigns([]);
+      return;
+    }
     console.log('🔍 Fetching designs for user:', user._id);
     try {
       const url = `${API_ENDPOINTS.DESIGNS}?userId=${user._id}&limit=100&sortBy=createdAt&sortOrder=desc`;
@@ -73,20 +78,35 @@ const Profile = () => {
       });
       
       console.log('📨 Response status:', response.status);
+      if (!response.ok) {
+        console.error('❌ Response not OK:', response.status, response.statusText);
+        setMyDesigns([]);
+        return;
+      }
+      
       const data = await response.json();
       console.log('📦 Response data:', data);
+      console.log('📦 Response data.data:', data.data);
+      console.log('📦 Response data.data.designs:', data.data?.designs);
       
-      if (data.success) {
-        const designs = Array.isArray(data.data)
-          ? data.data
-          : data.data?.designs || [];
-        setMyDesigns(designs);
-        // Update designs count from actual designs loaded
-        setStats(prev => ({
-          ...prev,
-          designsCount: designs.length
-        }));
+      if (data.success && data.data) {
+        // API returns { success: true, data: { designs: [...], pagination: {...} } }
+        const designs = data.data.designs || [];
+        console.log('📦 Extracted designs:', designs.length, 'Designs:', designs);
+        
+        if (Array.isArray(designs) && designs.length > 0) {
+          setMyDesigns(designs);
+          // Update designs count from actual designs loaded
+          setStats(prev => ({
+            ...prev,
+            designsCount: designs.length
+          }));
+        } else {
+          console.log('⚠️ No designs found in response or designs is not an array');
+          setMyDesigns([]);
+        }
       } else {
+        console.log('❌ API returned success: false or no data');
         setMyDesigns([]);
       }
     } catch (error) {
