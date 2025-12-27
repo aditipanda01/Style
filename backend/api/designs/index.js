@@ -3,6 +3,7 @@ import Design from "../../models/Design.js";
 import User from "../../models/User.js";
 import Notification from "../../models/Notification.js";
 import { authenticateToken, optionalAuth } from "../utils/auth.js";
+import mongoose from "mongoose";
 import Joi from "joi";
 
 // ============================================
@@ -134,9 +135,37 @@ async function getDesigns(req, res) {
 
         if (category) query.category = category;
         if (userId) {
-          query.userId = userId;
-          if (req.userId && req.userId.toString() === userId) {
-            delete query.isPublic; // Owner sees all
+          // Convert userId string to ObjectId for proper querying
+          try {
+            const ObjectId = mongoose.Types.ObjectId;
+            if (ObjectId.isValid(userId)) {
+              query.userId = new ObjectId(userId);
+            } else {
+              query.userId = userId;
+            }
+          } catch (e) {
+            query.userId = userId;
+          }
+          
+          // If user is viewing their own designs, show all (public and private)
+          if (req.userId) {
+            const reqUserIdStr = req.userId.toString();
+            const queryUserIdStr = userId.toString(); // Compare with original string from query
+            console.log('🔍 User ID comparison:', { 
+              reqUserId: reqUserIdStr, 
+              queryUserId: queryUserIdStr, 
+              match: reqUserIdStr === queryUserIdStr,
+              reqUserIdType: typeof req.userId,
+              queryUserIdType: typeof userId
+            });
+            if (reqUserIdStr === queryUserIdStr) {
+              delete query.isPublic; // Owner sees all their designs
+              console.log('✅ Removed isPublic filter - user viewing own designs');
+            } else {
+              console.log('⚠️ User ID mismatch - will only show public designs');
+            }
+          } else {
+            console.log('⚠️ No req.userId - will only show public designs');
           }
         }
         if (search) {

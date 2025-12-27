@@ -94,19 +94,20 @@ const Profile = () => {
         const designs = data.data.designs || [];
         console.log('📦 Extracted designs:', designs.length, 'Designs:', designs);
         
-        if (Array.isArray(designs) && designs.length > 0) {
+        if (Array.isArray(designs)) {
           setMyDesigns(designs);
           // Update designs count from actual designs loaded
           setStats(prev => ({
             ...prev,
             designsCount: designs.length
           }));
+          console.log('✅ Successfully set', designs.length, 'designs');
         } else {
-          console.log('⚠️ No designs found in response or designs is not an array');
+          console.log('⚠️ Designs is not an array:', typeof designs, designs);
           setMyDesigns([]);
         }
       } else {
-        console.log('❌ API returned success: false or no data');
+        console.log('❌ API returned success: false or no data. Response:', data);
         setMyDesigns([]);
       }
     } catch (error) {
@@ -117,7 +118,8 @@ const Profile = () => {
 
   const handleDesignSuccess = async (newDesign) => {
     console.log('✅ New design submitted:', newDesign);
-    await loadProfileData();
+    // Explicitly reload both stats and designs
+    await Promise.all([loadStats(), loadMyDesigns()]);
     setShowSubmitForm(false);
     alert('🎉 Design submitted successfully! Your design is now visible in your profile and category page.');
   };
