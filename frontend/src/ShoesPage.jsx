@@ -14,7 +14,6 @@ function FollowButton({ userId }) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Check if current user is following this user
     if (user && user.following) {
       setIsFollowing(user.following.some(id => 
         id === userId || (typeof id === 'object' && id._id === userId)
@@ -40,7 +39,6 @@ function FollowButton({ userId }) {
       });
 
       if (response.ok) {
-        const data = await response.json();
         setIsFollowing(!isFollowing);
       } else {
         const error = await response.json();
@@ -58,17 +56,7 @@ function FollowButton({ userId }) {
     <button
       onClick={handleFollow}
       disabled={loading}
-      style={{
-        background: isFollowing ? '#666' : '#222',
-        color: '#fff',
-        border: 'none',
-        borderRadius: 6,
-        padding: '8px 16px',
-        cursor: loading ? 'not-allowed' : 'pointer',
-        fontSize: 14,
-        fontWeight: 600,
-        opacity: loading ? 0.6 : 1
-      }}
+      className={`design-card-follow-btn ${isFollowing ? 'following' : ''}`}
     >
       {loading ? '...' : isFollowing ? 'Following' : '+ Follow'}
     </button>
@@ -141,7 +129,6 @@ function DesignerInspirationCard({ design, onUpdate }) {
   const { isAuthenticated, token, user } = useAuth();
   const primaryImage = design.images?.find(img => img.isPrimary) || design.images?.[0];
   const designerPhoto = design.designerPhoto;
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
   
   const [isLiked, setIsLiked] = useState(design.isLiked || false);
   const [likesCount, setLikesCount] = useState(design.likesCount || 0);
@@ -152,12 +139,6 @@ function DesignerInspirationCard({ design, onUpdate }) {
   const [commentText, setCommentText] = useState('');
   const [loading, setLoading] = useState(false);
   const [loadingComments, setLoadingComments] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 600);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const handleLike = async () => {
     if (!isAuthenticated) {
@@ -183,8 +164,7 @@ function DesignerInspirationCard({ design, onUpdate }) {
         onUpdate?.();
       } else {
         const error = await response.json();
-        console.error('Like error response:', error);
-        alert(error.error?.message || error.error?.code || 'Failed to like design');
+        alert(error.error?.message || 'Failed to like design');
       }
     } catch (error) {
       console.error('Like error:', error);
@@ -214,7 +194,6 @@ function DesignerInspirationCard({ design, onUpdate }) {
         const data = await response.json();
         setSharesCount(data.data.sharesCount);
         
-        // Try to use Web Share API if available
         if (navigator.share) {
           try {
             await navigator.share({
@@ -223,19 +202,16 @@ function DesignerInspirationCard({ design, onUpdate }) {
               url: window.location.href
             });
           } catch (shareError) {
-            // User cancelled or error occurred, but share count is already updated
             console.log('Share cancelled or failed');
           }
         } else {
-          // Fallback: copy to clipboard
           navigator.clipboard.writeText(window.location.href);
           alert('Link copied to clipboard!');
         }
         onUpdate?.();
       } else {
         const error = await response.json();
-        console.error('Share error response:', error);
-        alert(error.error?.message || error.error?.code || 'Failed to share design');
+        alert(error.error?.message || 'Failed to share design');
       }
     } catch (error) {
       console.error('Share error:', error);
@@ -300,8 +276,7 @@ function DesignerInspirationCard({ design, onUpdate }) {
         onUpdate?.();
       } else {
         const error = await response.json();
-        console.error('Comment error response:', error);
-        alert(error.error?.message || error.error?.code || 'Failed to add comment');
+        alert(error.error?.message || 'Failed to add comment');
       }
     } catch (error) {
       console.error('Comment error:', error);
@@ -327,57 +302,14 @@ function DesignerInspirationCard({ design, onUpdate }) {
   };
 
   return (
-    <div className="design-card-container" style={{
-      background: '#8c8c8c',
-      borderRadius: 5,
-      boxShadow: '0 6px 24px #0001',
-      width: '100%',
-      maxWidth: 400,
-      padding: 20,
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'flex-start',
-      fontFamily: 'Montserrat, Arial, sans-serif',
-      position: 'relative',
-      margin: 12
-    }}>
-      <div className="design-card-image" style={{
-        width: 140,
-        height: 280,
-        borderRadius: 5,
-        background: '#e5e1da',
-        border: '2px solid #cfc9be',
-        overflow: 'hidden',
-        position: 'relative',
-        marginRight: 20,
-        flexShrink: 0
-      }}>
-        {primaryImage && <img src={primaryImage.url} alt="Shoes" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
-        <div style={{
-          position: 'absolute',
-          top: 12,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: 60,
-          height: 10,
-          background: '#d6d2c8',
-          borderRadius: 5
-        }} />
+    <div className="design-card-container">
+      <div className="design-card-image">
+        {primaryImage && <img src={primaryImage.url} alt="Shoes" />}
       </div>
 
-      <div style={{ flex: 1, position: 'relative' }}>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: 18
-        }}>
-          <div style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 24,
-            fontWeight: 500,
-            color: '#222'
-          }}>
+      <div className="design-card-content-wrapper">
+        <div className="design-card-header">
+          <div className="design-card-designer-name">
             {design.user?.username || `${design.user?.firstName} ${design.user?.lastName}`}
           </div>
           {design.user?._id && design.user._id !== user?._id && (
@@ -385,186 +317,83 @@ function DesignerInspirationCard({ design, onUpdate }) {
           )}
         </div>
 
-        <div className="design-card-content" style={{
-          background: 'rgba(237, 231, 223, 0.5)',
-          borderRadius: 5,
-          padding: '12px 12px 12px 100px',
-          position: 'relative',
-          minHeight: 100,
-          marginBottom: 12,
-          boxShadow: '0 2px 8px #0001',
-          display: 'flex',
-          alignItems: 'center',
-        }}>
-          <div className="design-card-avatar" style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            position: 'absolute',
-            left: 10,
-            top: 12,
-            width: 80,
-            height: 80,
-            borderRadius: '50%',
-            background: 'rgba(237, 231, 223, 0.5)',
-          }}>
+        <div className="design-card-content">
+          <div className="design-card-avatar">
             {designerPhoto && (
-              <img
-                src={designerPhoto.url}
-                alt="Designer"
-                style={{
-                  width: 75,
-                  height: 75,
-                  borderRadius: '50%',
-                  objectFit: 'cover',
-                  border: '2px solid #fff',
-                  boxShadow: '0 1px 4px #0002',
-                  background: '#fff',
-                }}
-              />
+              <img src={designerPhoto.url} alt="Designer" />
             )}
           </div>
 
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            marginLeft: 24,
-          }}>
-            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+          <div className="design-card-interactions">
+            <div className="design-card-icons">
               <button
                 onClick={handleLike}
                 disabled={loading}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: isLiked ? '#ff6b6b' : '#222',
-                  fontSize: 24,
-                  fontWeight: 700,
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  padding: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 4,
-                  opacity: loading ? 0.6 : 1
-                }}
+                className={`design-card-icon-btn ${isLiked ? 'liked' : ''}`}
                 title={`${likesCount} likes`}
               >
-                {isLiked ? '❤️' : '♡'} {likesCount > 0 && <span style={{ fontSize: 12 }}>{likesCount}</span>}
+                {isLiked ? '❤️' : '♡'}
+                {likesCount > 0 && <span className="design-card-icon-count">{likesCount}</span>}
               </button>
+              
               <button
                 onClick={handleCommentClick}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#222',
-                  fontSize: 24,
-                  cursor: 'pointer',
-                  padding: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 4
-                }}
+                className="design-card-icon-btn"
                 title={`${commentsCount} comments`}
               >
-                🗨️ {commentsCount > 0 && <span style={{ fontSize: 12 }}>{commentsCount}</span>}
+                🗨️
+                {commentsCount > 0 && <span className="design-card-icon-count">{commentsCount}</span>}
               </button>
+              
               <button
                 onClick={handleShare}
                 disabled={loading}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#222',
-                  fontSize: 24,
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  padding: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 4,
-                  opacity: loading ? 0.6 : 1
-                }}
+                className="design-card-icon-btn"
                 title={`${sharesCount} shares`}
               >
-                🔗 {sharesCount > 0 && <span style={{ fontSize: 12 }}>{sharesCount}</span>}
+                🔗
+                {sharesCount > 0 && <span className="design-card-icon-count">{sharesCount}</span>}
               </button>
             </div>
-            <div style={{ fontSize: 12, color: '#222', fontWeight: 400, textAlign: 'left', width: '100%', lineHeight: 1.4 }}>
+            
+            <div className="design-card-inspiration">
               {design.inspiration || design.description || design.tags?.join(', ') || 'Stunning footwear design'}
             </div>
           </div>
         </div>
 
-        {/* Comments Modal */}
         {showComments && (
-          <div style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            right: 0,
-            marginTop: 12,
-            background: '#fff',
-            borderRadius: 8,
-            boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
-            maxHeight: 400,
-            display: 'flex',
-            flexDirection: 'column',
-            zIndex: 1000
-          }}>
-            <div style={{
-              padding: 16,
-              borderBottom: '1px solid #eee',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}>
-              <h3 style={{ margin: 0, fontSize: 18, fontWeight: 600 }}>Comments ({commentsCount})</h3>
+          <div className="design-card-comments-modal">
+            <div className="design-card-comments-header">
+              <h3 className="design-card-comments-title">Comments ({commentsCount})</h3>
               <button
                 onClick={() => setShowComments(false)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  fontSize: 24,
-                  cursor: 'pointer',
-                  padding: 0,
-                  lineHeight: 1
-                }}
+                className="design-card-comments-close"
               >
                 ×
               </button>
             </div>
             
-            <div style={{
-              flex: 1,
-              overflowY: 'auto',
-              padding: 16,
-              maxHeight: 250
-            }}>
+            <div className="design-card-comments-list">
               {loadingComments ? (
                 <div style={{ textAlign: 'center', padding: 20, color: '#666' }}>Loading comments...</div>
               ) : comments.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: 20, color: '#666' }}>No comments yet. Be the first to comment!</div>
               ) : (
                 comments.map((comment) => (
-                  <div key={comment._id} style={{
-                    marginBottom: 16,
-                    paddingBottom: 16,
-                    borderBottom: '1px solid #f0f0f0'
-                  }}>
+                  <div key={comment._id} className="design-card-comment-item">
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                      <strong style={{ fontSize: 14 }}>
+                      <strong className="design-card-comment-author">
                         {comment.userId?.username || 
                          (comment.userId?.userType === 'company' 
                            ? comment.userId?.companyName 
                            : `${comment.userId?.firstName} ${comment.userId?.lastName}`)}
                       </strong>
-                      <span style={{ fontSize: 12, color: '#999' }}>
+                      <span className="design-card-comment-time">
                         {formatDate(comment.createdAt)}
                       </span>
                     </div>
-                    <div style={{ fontSize: 14, color: '#333', lineHeight: 1.5 }}>
+                    <div className="design-card-comment-text">
                       {comment.text}
                     </div>
                   </div>
@@ -674,16 +503,7 @@ const ShoesPage = () => {
         <img src={bgshoes} alt="Shoe Feature" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
       </div>
 
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 400px))', 
-        gap: 24, 
-        justifyContent: 'center',
-        width: '100%', 
-        padding: '0 20px',
-        marginTop: 120, 
-        marginBottom: 80 
-      }}>
+      <div className="design-cards-container" style={{ marginTop: 120, marginBottom: 80 }}>
         {loading ? (
           <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400, color: '#fff', fontSize: '1.2rem' }}>
             Loading shoes designs...
