@@ -684,16 +684,8 @@ const JewelleryPage = () => {
         <img src={jewebg} alt="Jewellery Feature" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
       </div>
 
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 400px))', 
-        gap: 24, 
-        justifyContent: 'center',
-        width: '100%', 
-        padding: '0 20px',
-        marginTop: 120, 
-        marginBottom: 80 
-      }}>
+      // Replace the inline style div with:
+<div className="design-cards-container" style={{ marginTop: 120, marginBottom: 80 }}>
         {loading ? (
           <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400, color: '#fff', fontSize: '1.2rem' }}>
             Loading jewellery designs...

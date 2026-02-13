@@ -1494,15 +1494,17 @@ function DressPage() {
   const fetchDressDesigns = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_ENDPOINTS.DESIGNS}?category=dress&limit=100&sortBy=createdAt&sortOrder=desc`);
+      const response = await fetch(
+        `${API_ENDPOINTS.DESIGNS}?category=dress&limit=100&sortBy=createdAt&sortOrder=desc`
+      );
       const data = await response.json();
-      
+
       if (data.success) {
-        console.log('✅ Fetched dress designs:', data.data.designs.length);
+        console.log("✅ Fetched dress designs:", data.data.designs.length);
         setDesigns(data.data.designs);
       }
     } catch (error) {
-      console.error('❌ Failed to fetch dress designs:', error);
+      console.error("❌ Failed to fetch dress designs:", error);
     } finally {
       setLoading(false);
     }
@@ -1510,84 +1512,177 @@ function DressPage() {
 
   return (
     <>
-      <div style={{
-        width: '100vw',
-        minHeight: '100vh',
-        background: '#000',
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'relative',
-        alignItems: 'center',
-        overflow: 'hidden',
-      }}>
-        {/* Beige section (top, 60%) with AllureBanner overlay */}
-        <div style={{ background: '#d3d3d3', width: '100vw', height: '60vh', minHeight: '60vh', position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 80 }}>
-          {/* AllureBanner as overlay */}
-          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 2, display: 'flex', justifyContent: 'center', pointerEvents: 'none' }}>
-            <div style={{ width: 900, maxWidth: '90vw', margin: '0 auto', top: 70, position: 'relative' }}>
+      <div
+        style={{
+          width: "100vw",
+          minHeight: "100vh",
+          background: "#000",
+          display: "flex",
+          flexDirection: "column",
+          position: "relative",
+          alignItems: "center",
+          overflow: "hidden",
+        }}
+      >
+        {/* ===== HERO SECTION (IDENTICAL STRUCTURE AS SHOES) ===== */}
+        <div
+          style={{
+            background: "#d3d3d3",
+            width: "100vw",
+            height: "60vh",
+            minHeight: "60vh",
+            position: "relative",
+            zIndex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 80,
+          }}
+        >
+          {/* AllureBanner Overlay */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              zIndex: 2,
+              display: "flex",
+              justifyContent: "center",
+              pointerEvents: "none",
+            }}
+          >
+            <div
+              style={{
+                width: 900,
+                maxWidth: "90vw",
+                margin: "0 auto",
+                top: 70,
+                position: "relative",
+              }}
+            >
               <AllureBanner />
             </div>
           </div>
-          <DressSlider />
+
+          {/* 🔥 Matching Slider Wrapper (Same as ShoesPage) */}
+          <div
+            style={{
+              position: "relative",
+              width: "100%",
+              height: "100%",
+              background: "#d3d3d3",
+              borderRadius: 12,
+              boxShadow: "0 2px 12px #0001",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "hidden",
+            }}
+          >
+            <DressSlider />
+          </div>
         </div>
-        {/* Circle at the partition with image */}
-        <div style={{
-          position: 'absolute',
-          left: '50%',
-          top: '70vh',
-          transform: 'translate(-50%, -50%)',
-          width: 320,
-          height: 320,
-          borderRadius: '50%',
-          background: '#fff',
-          boxShadow: '0 8px 32px #0004',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          overflow: 'hidden',
-          border: '8px solid #d3d3d3',
-          zIndex: 2,
-        }}>
-          <img src={dressFeature} alt="Dress Feature" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+
+        {/* ===== FEATURE CIRCLE ===== */}
+        <div
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "70vh",
+            transform: "translate(-50%, -50%)",
+            width: 320,
+            height: 320,
+            borderRadius: "50%",
+            background: "#fff",
+            boxShadow: "0 8px 32px #0004",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            overflow: "hidden",
+            border: "8px solid #d3d3d3",
+            zIndex: 2,
+          }}
+        >
+          <img
+            src={dressFeature}
+            alt="Dress Feature"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
         </div>
-        {/* Designer Inspiration Grid */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 400px))', 
-          gap: 24, 
-          justifyContent: 'center',
-          width: '100%', 
-          padding: '0 20px',
-          marginTop: 120, 
-          marginBottom: 80 
-        }}>
+
+        {/* ===== DESIGN GRID ===== */}
+        <div
+          className="design-cards-container"
+          style={{ marginTop: 120, marginBottom: 80 }}
+        >
           {loading ? (
-            <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400, color: '#fff', fontSize: '1.2rem' }}>
+            <div
+              style={{
+                gridColumn: "1 / -1",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: 400,
+                color: "#fff",
+                fontSize: "1.2rem",
+              }}
+            >
               Loading dress designs...
             </div>
           ) : designs.length === 0 ? (
-            <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400, color: '#fff', fontSize: '1.2rem', flexDirection: 'column', gap: '1rem' }}>
+            <div
+              style={{
+                gridColumn: "1 / -1",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: 400,
+                color: "#fff",
+                fontSize: "1.2rem",
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
               <div>No dress designs found yet.</div>
-              <Link to="/profile" style={{ color: '#007bff', textDecoration: 'none' }}>
+              <Link
+                to="/profile"
+                style={{ color: "#007bff", textDecoration: "none" }}
+              >
                 Submit your first design here
               </Link>
             </div>
           ) : (
             designs.map((design) => (
-              <DressDesignCard key={design._id} design={design} onUpdate={fetchDressDesigns} />
+              <DressDesignCard
+                key={design._id}
+                design={design}
+                onUpdate={fetchDressDesigns}
+              />
             ))
           )}
         </div>
-        {/* Footer */}
-        <footer style={{ width: '100%', background: '#222', color: '#fff', textAlign: 'center', padding: '32px 0 20px 0', fontFamily: 'Montserrat, Arial, sans-serif', fontSize: 16, letterSpacing: 1, marginTop: 40 }}>
+
+        {/* ===== FOOTER ===== */}
+        <footer
+          style={{
+            width: "100%",
+            background: "#222",
+            color: "#fff",
+            textAlign: "center",
+            padding: "32px 0 20px 0",
+            fontFamily: "Montserrat, Arial, sans-serif",
+            fontSize: 16,
+            letterSpacing: 1,
+            marginTop: 40,
+          }}
+        >
           &copy; {new Date().getFullYear()} Designer Gallery. All rights reserved.
         </footer>
       </div>
     </>
   );
 }
-
-
 
 import { AuthProvider } from './contexts/AuthContext';
 

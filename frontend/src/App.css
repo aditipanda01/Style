@@ -471,27 +471,28 @@
     grid-template-columns: repeat(auto-fit, minmax(350px, 450px)) !important;
   }
 }
-/* Add this to your App.css file */
 
-/* ===== Two-Column Design Card Layout ===== */
+/* ===== UPDATED Two-Column Design Card Layout ===== */
+/* Perfect sizing for Dress, Jewellery, and Shoes pages */
+
 .design-cards-container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  max-width: 900px;
+  gap: 40px;
+  max-width: 1200px;
   width: 100%;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 32px;
   box-sizing: border-box;
 }
 
 .design-card-container {
   background: #8c8c8c;
-  border-radius: 5px;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
   width: 100%;
   max-width: 100%;
-  padding: 16px;
+  padding: 24px;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -499,17 +500,24 @@
   position: relative;
   margin: 0;
   box-sizing: border-box;
+  min-height: 340px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.design-card-container:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
 }
 
 .design-card-image {
-  width: 120px;
-  height: 240px;
-  border-radius: 5px;
+  width: 160px;
+  height: 300px;
+  border-radius: 8px;
   background: #e5e1da;
   border: 2px solid #cfc9be;
   overflow: hidden;
   position: relative;
-  margin-right: 16px;
+  margin-right: 24px;
   flex-shrink: 0;
 }
 
@@ -522,11 +530,11 @@
 .design-card-image::after {
   content: '';
   position: absolute;
-  top: 10px;
+  top: 12px;
   left: 50%;
   transform: translateX(-50%);
-  width: 50px;
-  height: 8px;
+  width: 60px;
+  height: 10px;
   background: #d6d2c8;
   border-radius: 5px;
   z-index: 2;
@@ -544,13 +552,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
-  gap: 8px;
+  margin-bottom: 18px;
+  gap: 12px;
 }
 
 .design-card-designer-name {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 500;
   color: #222;
   white-space: nowrap;
@@ -564,10 +572,10 @@
   background: #222;
   color: #fff;
   border: none;
-  border-radius: 5px;
-  padding: 6px 12px;
+  border-radius: 6px;
+  padding: 8px 16px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   white-space: nowrap;
   flex-shrink: 0;
@@ -584,11 +592,11 @@
 
 .design-card-content {
   background: rgba(237, 231, 223, 0.5);
-  border-radius: 5px;
-  padding: 10px 10px 10px 80px;
+  border-radius: 8px;
+  padding: 14px 14px 14px 100px;
   position: relative;
-  min-height: 80px;
-  margin-bottom: 10px;
+  min-height: 100px;
+  margin-bottom: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
@@ -599,11 +607,11 @@
   align-items: center;
   justify-content: center;
   position: absolute;
-  left: 8px;
+  left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  width: 65px;
-  height: 65px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   background: rgba(237, 231, 223, 0.5);
   overflow: hidden;
@@ -611,8 +619,8 @@
 }
 
 .design-card-avatar img {
-  width: 60px;
-  height: 60px;
+  width: 75px;
+  height: 75px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #fff;
@@ -626,33 +634,33 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  gap: 6px;
+  gap: 8px;
 }
 
 .design-card-icons {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 6px;
+  gap: 14px;
+  margin-bottom: 8px;
 }
 
 .design-card-icon-btn {
   background: none;
   border: none;
   color: #222;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   cursor: pointer;
   padding: 0;
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   transition: transform 0.2s;
 }
 
 .design-card-icon-btn:hover {
-  transform: scale(1.1);
+  transform: scale(1.15);
 }
 
 .design-card-icon-btn.liked {
@@ -665,17 +673,17 @@
 }
 
 .design-card-icon-count {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
 }
 
 .design-card-inspiration {
-  font-size: 11px;
+  font-size: 12px;
   color: #222;
   font-weight: 400;
   text-align: left;
   width: 100%;
-  line-height: 1.3;
+  line-height: 1.4;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -687,18 +695,18 @@
   top: 100%;
   left: 0;
   right: 0;
-  margin-top: 10px;
+  margin-top: 12px;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  max-height: 350px;
+  max-height: 400px;
   display: flex;
   flex-direction: column;
   z-index: 1000;
 }
 
 .design-card-comments-header {
-  padding: 12px;
+  padding: 16px;
   border-bottom: 1px solid #eee;
   display: flex;
   justify-content: space-between;
@@ -707,7 +715,7 @@
 
 .design-card-comments-title {
   margin: 0;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   color: #222;
 }
@@ -715,7 +723,7 @@
 .design-card-comments-close {
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 24px;
   cursor: pointer;
   padding: 0;
   line-height: 1;
@@ -725,93 +733,283 @@
 .design-card-comments-list {
   flex: 1;
   overflow-y: auto;
-  padding: 12px;
-  max-height: 200px;
+  padding: 16px;
+  max-height: 250px;
 }
 
 .design-card-comment-item {
-  margin-bottom: 12px;
-  padding-bottom: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
   border-bottom: 1px solid #f0f0f0;
 }
 
 .design-card-comment-author {
   font-weight: 600;
-  font-size: 12px;
+  font-size: 13px;
   color: #222;
 }
 
 .design-card-comment-time {
-  font-size: 10px;
+  font-size: 11px;
   color: #999;
 }
 
 .design-card-comment-text {
-  font-size: 12px;
+  font-size: 13px;
   color: #333;
-  line-height: 1.4;
-  margin-top: 4px;
+  line-height: 1.5;
+  margin-top: 6px;
 }
 
+/* ===== RESPONSIVE BREAKPOINTS FOR DESIGN CARDS ===== */
+
+/* Mobile (Single Column) */
 @media (max-width: 768px) {
   .design-cards-container {
     grid-template-columns: 1fr;
-    gap: 16px;
-    padding: 0 12px;
+    gap: 24px;
+    padding: 0 16px;
   }
   
   .design-card-container {
-    padding: 12px;
+    padding: 16px;
+    min-height: auto;
   }
   
   .design-card-image {
-    width: 100px;
-    height: 200px;
-    margin-right: 12px;
+    width: 120px;
+    height: 240px;
+    margin-right: 16px;
   }
   
   .design-card-designer-name {
-    font-size: 18px;
+    font-size: 20px;
   }
   
   .design-card-avatar {
-    width: 55px;
-    height: 55px;
+    width: 65px;
+    height: 65px;
   }
   
   .design-card-avatar img {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
   }
   
   .design-card-content {
-    padding: 8px 8px 8px 65px;
-    min-height: 65px;
+    padding: 12px 12px 12px 80px;
+    min-height: 80px;
   }
   
   .design-card-icon-btn {
-    font-size: 18px;
-    gap: 2px;
+    font-size: 20px;
+    gap: 3px;
   }
   
   .design-card-icons {
-    gap: 8px;
+    gap: 10px;
   }
 }
 
+/* Tablet (Keep 2 Columns) */
 @media (min-width: 769px) and (max-width: 1024px) {
   .design-cards-container {
-    max-width: 750px;
-    gap: 18px;
+    max-width: 900px;
+    gap: 32px;
+    padding: 0 24px;
   }
   
   .design-card-container {
-    padding: 14px;
+    padding: 20px;
   }
 }
 
+/* Large Desktop (Keep 2 Columns, Increase Max Width) */
 @media (min-width: 1025px) {
   .design-cards-container {
-    max-width: 950px;
+    max-width: 1200px;
+    gap: 40px;
+  }
+}
+
+/* Extra Large Screens (Still 2 Columns) */
+@media (min-width: 1400px) {
+  .design-cards-container {
+    max-width: 1400px;
+    gap: 48px;
+  }
+  
+  .design-card-image {
+    width: 180px;
+    height: 320px;
+  }
+  
+  .design-card-container {
+    padding: 28px;
+    min-height: 360px;
+  }
+}
+
+/* ========================================
+   DRESS PAGE STYLES
+======================================== */
+
+.dress-page {
+  width: 100%;
+  min-height: 100vh;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+/* ===== HERO SECTION ===== */
+
+.dress-hero-section {
+  position: relative;
+  width: 100%;
+  height: 60vh;
+  min-height: 500px;
+  background: #d3d3d3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 80px;
+}
+
+.dress-banner-wrapper {
+  position: absolute;
+  top: 70px;
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ===== FEATURE CIRCLE ===== */
+
+.dress-feature-circle {
+  position: relative;
+  margin-top: -160px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: #fff;
+  border: 8px solid #d3d3d3;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  overflow: hidden;
+  z-index: 3;
+}
+
+.dress-feature-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ===== GRID SECTION ===== */
+
+.dress-grid-section {
+  width: 100%;
+  padding: 120px 0 80px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.dress-loading,
+.dress-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #fff;
+  min-height: 300px;
+  font-size: 1.2rem;
+}
+
+.dress-submit-link {
+  display: inline-block;
+  margin-top: 12px;
+  color: #4da6ff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.dress-submit-link:hover {
+  text-decoration: underline;
+}
+
+/* ===== FOOTER ===== */
+
+.dress-footer {
+  width: 100%;
+  background: #222;
+  color: #fff;
+  text-align: center;
+  padding: 32px 0;
+  margin-top: 40px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* ========================================
+   RESPONSIVE FIXES
+======================================== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+
+  .dress-hero-section {
+    height: 50vh;
+    min-height: 420px;
+  }
+
+  .dress-feature-circle {
+    width: 250px;
+    height: 250px;
+    margin-top: -120px;
+  }
+
+  .dress-grid-section {
+    padding-top: 100px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+
+  .dress-hero-section {
+    height: 40vh;
+    min-height: 350px;
+  }
+
+  .dress-banner-wrapper {
+    top: 40px;
+    max-width: 90%;
+  }
+
+  .dress-feature-circle {
+    width: 200px;
+    height: 200px;
+    margin-top: -100px;
+    border-width: 6px;
+  }
+
+  .dress-grid-section {
+    padding-top: 80px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+
+  .dress-feature-circle {
+    width: 170px;
+    height: 170px;
+    margin-top: -80px;
+  }
+
+  .dress-hero-section {
+    min-height: 300px;
   }
 }
