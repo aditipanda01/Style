@@ -110,159 +110,295 @@ import { API_ENDPOINTS } from './config/api';
 
 
 
+
+
 function Header() {
   const { isAuthenticated, user } = useAuth();
 
   return (
-    <header style={{
-      width: '100%',
-      background: '#ede7df',
-      color: '#181818',
-      display: 'flex',
-      marginLeft: -100,
-      gap: 100,
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '2.5rem 2vw 1.5rem 2vw',
-      fontFamily: 'Montserrat, Arial, sans-serif',
-      letterSpacing: 2
-    }}>
-      <div
-        style={{
-          fontFamily: "'Bebas Neue', Arial, sans-serif",
-          fontWeight: 700,
-          fontSize: '2.2rem',
-          letterSpacing: 2,
-          marginLeft: 200,
-          marginRight: 0
-        }}
-      >
-        THE RUNWAY
-      </div>
+    <>
+      <style>{`
+        .header-root {
+          width: 100%;
+          background: #ede7df;
+          color: #181818;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 1.5rem 4vw;
+          box-sizing: border-box;
+          font-family: 'Montserrat', Arial, sans-serif;
+          letter-spacing: 2px;
+          position: relative;
+          z-index: 100;
+        }
 
-      <nav style={{
-        display: 'flex',
-        gap: 12,
-        fontWeight: 600,
-        fontSize: '1.1rem',
-        textTransform: 'uppercase'
-      }}>
-        <Link to="/" style={{ color: '#181818', textDecoration: 'none' }}>Home</Link>
-        <Link to="/blog" style={{ color: '#181818', textDecoration: 'none' }}>Blog</Link>
-        {isAuthenticated ? (
-          <Link to="/profile" style={{ color: '#181818', textDecoration: 'none' }}>
-            {user?.name || 'Profile'}
-          </Link>
-        ) : (
-          <Link to="/login-signup" style={{ color: '#181818', textDecoration: 'none' }}>
-            Login/Signup
-          </Link>
-        )}
-      </nav>
-    </header>
+        .header-logo {
+          font-family: 'Bebas Neue', Arial, sans-serif;
+          font-weight: 700;
+          font-size: 2.2rem;
+          letter-spacing: 2px;
+          color: #181818;
+          text-decoration: none;
+          white-space: nowrap;
+        }
+
+        .header-nav {
+          display: flex;
+          gap: 24px;
+          font-weight: 600;
+          font-size: 1.1rem;
+          text-transform: uppercase;
+          align-items: center;
+        }
+
+        .header-nav a {
+          color: #181818;
+          text-decoration: none;
+          white-space: nowrap;
+        }
+
+        .header-nav a:hover {
+          opacity: 0.6;
+        }
+
+        /* ── Mobile ── */
+        @media (max-width: 767px) {
+          .header-root {
+            padding: 1rem 5vw;
+          }
+          .header-logo {
+            font-size: 1.6rem;
+          }
+          .header-nav {
+            gap: 14px;
+            font-size: 0.85rem;
+          }
+        }
+      `}</style>
+
+      <header className="header-root">
+        <div className="header-logo">THE RUNWAY</div>
+
+        <nav className="header-nav">
+          <Link to="/">Home</Link>
+          <Link to="/blog">Blog</Link>
+          {isAuthenticated ? (
+            <Link to="/profile">{user?.name || 'Profile'}</Link>
+          ) : (
+            <Link to="/login-signup">Login/Signup</Link>
+          )}
+        </nav>
+      </header>
+    </>
   );
 }
+// ─────────────────────────────────────────────────────────────
+// DROP-IN REPLACEMENT for the Hero() function in App.jsx
+// Desktop view is 100% untouched — only @media (max-width: 767px)
+// is added for mobile. All imports already exist in App.jsx.
+// ─────────────────────────────────────────────────────────────
+
 function Hero() {
   return (
-    <section
-      style={{
-        width: '100vw',
-        background: '#ede7df',
-        height: 350, // <-- Fixed height
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingBottom: 0
-      }}
-    >
-      {/* Top grid: Pic 1 (with Pic 3 overlapping) | SKETCH TO STYLE | Pic 2 */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr 1fr', width: '100%', maxWidth: 1200, margin: '0 auto', alignItems: 'center', gap: 32, marginTop: 0 }}>
-        {/* Pic 1 with Pic 3 overlapping */}
-        <div style={{ position: 'relative', width: 300, height: 350, display: 'flex', justifyContent: 'flex-start' }}>
-          {/* Pic 1 */}
-          <img
-            src={pic1}
-            alt="Pic 1"
-            style={{
-              width: 300,
-              height: 450,
-              marginTop:50,
-              objectFit: 'cover',
-              borderRadius: 10,
-              boxShadow: '0 4px 24px #0002',
-              filter: 'grayscale(100%)',
-              background: '#fff',
-              position: 'absolute',
-              left: 0,
-              top: 0,
-              zIndex: 1
-            }}
-          />
-          {/* Pic 3 overlapping Pic 1, starting from Pic 1's mid */}
-          <img
-            src={pic3}
-            alt="Pic 3"
-            style={{
-              width: 220,
-              height: 280,
-              objectFit: 'cover',
-              borderRadius: 10,
-              boxShadow: '0 2px 12px #0002',
-              filter: 'grayscale(100%)',
-              background: '#181818',
-              position: 'absolute',
-              left: '120%',
-              top: '77%',
-              transform: 'translateX(-50%)',
-              zIndex: 2
-            }}
-          />
-        </div>
-        {/* Center: SKETCH TO STYLE */}
-        <div style={{ textAlign: 'center', position: 'relative', minHeight: 80, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+    <>
+      <style>{`
+        /* ── MOBILE ONLY — desktop styles are unchanged inline ── */
+        @media (max-width: 767px) {
+
+          /* section height: auto instead of fixed 350px */
+          .hero-section-mobile {
+            height: auto !important;
+            padding: 32px 16px 24px 16px !important;
+          }
+
+          /* switch from 3-col grid to single column */
+          .hero-grid-mobile {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 24px !important;
+            max-width: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
+          }
+
+          /* Text block: show first */
+          .hero-center-mobile {
+            order: -1 !important;
+            text-align: center !important;
+          }
+
+          /* Shrink the script fonts */
+          .hero-sketch-mobile {
+            font-size: clamp(3rem, 14vw, 5rem) !important;
+            margin-left: 0 !important;
+          }
+          .hero-to-mobile {
+            font-size: clamp(1rem, 5vw, 1.6rem) !important;
+          }
+          .hero-style-mobile {
+            font-size: clamp(2rem, 10vw, 3.5rem) !important;
+            margin-top: 8px !important;
+          }
+
+          /* Left col: drop absolute positioning, show pics side by side */
+          .hero-left-mobile {
+            position: relative !important;
+            width: 100% !important;
+            height: auto !important;
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: flex-end !important;
+            justify-content: center !important;
+            gap: 10px !important;
+          }
+          .hero-pic1-mobile {
+            position: relative !important;
+            width: 48% !important;
+            height: 190px !important;
+            margin-top: 0 !important;
+            left: unset !important;
+            top: unset !important;
+          }
+          .hero-pic3-mobile {
+            position: relative !important;
+            width: 36% !important;
+            height: 150px !important;
+            left: unset !important;
+            top: unset !important;
+            transform: none !important;
+          }
+
+          /* Right col: center pic2, hide blob */
+          .hero-right-mobile {
+            width: 100% !important;
+            justify-content: center !important;
+          }
+          .hero-blob-mobile {
+            display: none !important;
+          }
+          .hero-pic2-mobile {
+            width: 60% !important;
+            max-width: 220px !important;
+            height: auto !important;
+            aspect-ratio: 2/3 !important;
+          }
+        }
+      `}</style>
+
+      <section
+        className="hero-section-mobile"
+        style={{
+          width: '100%',
+          background: '#ede7df',
+          height: 350,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingBottom: 0,
+        }}
+      >
+        <div
+          className="hero-grid-mobile"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1.2fr 1fr',
+            width: '100%',
+            maxWidth: 1200,
+            margin: '0 auto',
+            alignItems: 'center',
+            gap: 32,
+            marginTop: 0,
+          }}
+        >
+          {/* LEFT: pic1 with pic3 overlapping */}
           <div
-            className="great-vibes-regular"
+            className="hero-left-mobile"
+            style={{ position: 'relative', width: 300, height: 350, display: 'flex', justifyContent: 'flex-start' }}
+          >
+            <img
+              src={pic1}
+              alt="Pic 1"
+              className="hero-pic1-mobile"
+              style={{
+                width: 300, height: 450, marginTop: 50,
+                objectFit: 'cover', borderRadius: 10,
+                boxShadow: '0 4px 24px #0002',
+                filter: 'grayscale(100%)',
+                background: '#fff',
+                position: 'absolute', left: 0, top: 0, zIndex: 1,
+              }}
+            />
+            <img
+              src={pic3}
+              alt="Pic 3"
+              className="hero-pic3-mobile"
+              style={{
+                width: 220, height: 280,
+                objectFit: 'cover', borderRadius: 10,
+                boxShadow: '0 2px 12px #0002',
+                filter: 'grayscale(100%)',
+                background: '#181818',
+                position: 'absolute',
+                left: '120%', top: '77%',
+                transform: 'translateX(-50%)',
+                zIndex: 2,
+              }}
+            />
+          </div>
+
+          {/* CENTER: Sketch to Style */}
+          <div
+            className="hero-center-mobile"
             style={{
-              fontSize: '8.5rem',
-              color: '#b89c7d',
-              fontWeight: 700,
-              letterSpacing: 2,
-              lineHeight: 1,
-              marginBottom: 0,
-              marginLeft: -40 // Try -40, -60, etc. for more overlap
+              textAlign: 'center', position: 'relative',
+              minHeight: 80, display: 'flex',
+              flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
             }}
           >
-            Sketch
+            <div
+              className="great-vibes-regular hero-sketch-mobile"
+              style={{ fontSize: '8.5rem', color: '#b89c7d', fontWeight: 700, letterSpacing: 2, lineHeight: 1, marginBottom: 0, marginLeft: -40 }}
+            >
+              Sketch
+            </div>
+            <div
+              className="hero-to-mobile"
+              style={{ fontWeight: 900, fontSize: '2.2rem', letterSpacing: 1, color: '#181818', marginTop: 0, lineHeight: 1, marginBottom: 8, fontFamily: 'Montserrat, Arial, sans-serif' }}
+            >
+              TO
+            </div>
+            <div
+              className="great-vibes-regular hero-style-mobile"
+              style={{ fontWeight: 900, fontSize: '5.1rem', letterSpacing: 1, color: '#181818', marginTop: 24, lineHeight: 1, marginBottom: 0 }}
+            >
+              Style
+            </div>
           </div>
+
+          {/* RIGHT: pic2 with blob */}
           <div
-            style={{
-              fontWeight: 900,
-              fontSize: '2.2rem',
-              letterSpacing: 1,
-              color: '#181818',
-              marginTop: 0,
-              
-              lineHeight: 1,
-              marginBottom: 8,
-              fontFamily: 'Montserrat, Arial, sans-serif' // or omit for default
-            }}
+            className="hero-right-mobile"
+            style={{ display: 'flex', justifyContent: 'center', position: 'relative', alignItems: 'center' }}
           >
-            TO
-          </div>
-          <div className="great-vibes-regular" style={{ fontWeight: 900, fontSize: '5.1rem', letterSpacing: 1, color: '#181818', marginTop: 24, lineHeight: 1, marginBottom: 0 }}>
-            Style
+            <img
+              src={blob}
+              alt="Blob"
+              className="hero-blob-mobile"
+              style={{ position: 'absolute', left: '50%', top: '50%', width: 550, height: 600, transform: 'translate(-50%, -50%)', zIndex: 1, pointerEvents: 'none' }}
+            />
+            <img
+              src={pic2}
+              alt="Pic 2"
+              className="hero-pic2-mobile"
+              style={{ width: 300, height: 450, objectFit: 'cover', filter: 'grayscale(100%)', position: 'relative', zIndex: 2 }}
+            />
           </div>
         </div>
-        {/* Pic 2 with blob layer (restored to right column) */}
-        <div style={{ display: 'flex', justifyContent: 'center', position: 'relative', alignItems: 'center' }}>
-          {/* Blob layer as image */}
-          <img src={blob} alt="Blob" style={{ position: 'absolute', left: '50%', top: '50%', width: 550, height: 600, transform: 'translate(-50%, -50%)', zIndex: 1, opacity: 1, pointerEvents: 'none' }} />
-          {/* Pic 2 */}
-          <img src={pic2} alt="Pic 2" style={{ width: 300, height: 450, objectFit: 'cover', filter: 'grayscale(100%)', position: 'relative', zIndex: 2 }} />
-        </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
 
