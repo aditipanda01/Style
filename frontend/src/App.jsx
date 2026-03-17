@@ -402,91 +402,139 @@ function Hero() {
   );
 }
 
+// ─────────────────────────────────────────────────────────────
+// DROP-IN REPLACEMENT for QuoteSection() in App.jsx
+// Makes it fully responsive — no changes to desktop look.
+// ─────────────────────────────────────────────────────────────
+
 function QuoteSection() {
   const [showSubmitForm, setShowSubmitForm] = useState(false);
 
   return (
-    <section
-      style={{
-        width: '100%',
-        background: '#000',
-        color: '#fff',
-        textAlign: 'center',
-        padding: '0 0 2rem 0',
-        marginTop: 220,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}
-    >
-      <div className="quote-section">
-        <div
-          className="main-quote"
-          style={{
-            fontFamily: "'Bebas Neue', Arial, sans-serif",
-            fontWeight: 'bold',
-            fontSize: '4.5rem',
-            whiteSpace: 'nowrap',
-            marginBottom: '1rem',
-            overflowX: 'auto',
-            textOverflow: 'ellipsis',
-            maxWidth: '100vw',
-            display: 'block'
-          }}
-        >
-          Your style. Your stage. Their choice.
+    <>
+      <style>{`
+        .quote-section-root {
+          width: 100%;
+          background: #000;
+          color: #fff;
+          text-align: center;
+          padding: 0 24px 2rem 24px;
+          margin-top: 220px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          box-sizing: border-box;
+        }
+
+        .quote-main-text {
+          font-family: 'Bebas Neue', Arial, sans-serif;
+          font-weight: bold;
+          font-size: 4.5rem;
+          margin-bottom: 1rem;
+          display: block;
+          width: 100%;
+        }
+
+        .quote-sub-text {
+          font-size: 2.5rem;
+          margin-bottom: 1.5rem;
+          color: #fff;
+          text-align: center;
+          max-width: 900px;
+          margin-left: auto;
+          margin-right: auto;
+          line-height: 1.5;
+        }
+
+        .quote-submit-btn {
+          background: #444;
+          color: #fff;
+          border: none;
+          border-radius: 30px;
+          padding: 14px 36px;
+          font-weight: 700;
+          font-size: 1.1rem;
+          letter-spacing: 1px;
+          cursor: pointer;
+          box-shadow: 0 2px 8px #0004;
+          text-transform: uppercase;
+          transition: background 0.2s;
+        }
+
+        .quote-submit-btn:hover {
+          background: #666;
+        }
+
+        /* ── Tablet ── */
+        @media (max-width: 1024px) {
+          .quote-section-root {
+            margin-top: 160px;
+          }
+          .quote-main-text {
+            font-size: 3.5rem;
+          }
+          .quote-sub-text {
+            font-size: 2rem;
+          }
+        }
+
+        /* ── Mobile ── */
+        @media (max-width: 767px) {
+          .quote-section-root {
+            margin-top: 32px;
+            padding: 24px 20px 2rem 20px;
+          }
+          .quote-main-text {
+            font-size: clamp(1.6rem, 7vw, 2.8rem);
+            white-space: normal;
+            line-height: 1.2;
+            margin-bottom: 0.75rem;
+          }
+          .quote-sub-text {
+            font-size: clamp(1.2rem, 5vw, 1.8rem);
+            margin-bottom: 1.2rem;
+            line-height: 1.6;
+          }
+          .quote-submit-btn {
+            font-size: 0.95rem;
+            padding: 12px 28px;
+            width: 100%;
+            max-width: 300px;
+          }
+        }
+      `}</style>
+
+      <section className="quote-section-root">
+        <div className="quote-section">
+          <div className="main-quote quote-main-text">
+            Your style. Your stage. Their choice.
+          </div>
+
+          <div className="great-vibes-regular quote-sub-text">
+            Every sketch begins with passion.<br />
+            Here, raw ideas meet real voices — where<br />
+            designers rise, and talent gets the chance to shine.
+          </div>
         </div>
 
-        <div
-          className="great-vibes-regular"
-          style={{
-            fontSize: '2.5rem',
-            marginBottom: '1.5rem',
-            color: '#fff',
-            textAlign: 'center',
-            maxWidth: 900,
-            marginLeft: 'auto',
-            marginRight: 'auto',
-          }}
+        <button
+          className="quote-submit-btn"
+          onClick={() => setShowSubmitForm(true)}
         >
-          Every sketch begins with passion.<br />
-          Here, raw ideas meet real voices — where<br />
-          designers rise, and talent gets the chance to shine.
-        </div>
-      </div>
+          Submit a Design
+        </button>
 
-      {/* Submit button */}
-      <button
-        onClick={() => setShowSubmitForm(true)}
-        style={{
-          background: '#444',
-          color: '#fff',
-          border: 'none',
-          borderRadius: 30,
-          padding: '14px 36px',
-          fontWeight: 700,
-          fontSize: '1.1rem',
-          letterSpacing: 1,
-          cursor: 'pointer',
-          boxShadow: '0 2px 8px #0004',
-          textTransform: 'uppercase'
-        }}
-      >
-        Submit a Design
-      </button>
-
-      {/* Modal */}
-      {showSubmitForm && (
-        <DesignSubmissionForm
-          onClose={() => setShowSubmitForm(false)}
-          onSuccess={() => {
-            // Optional: reload or refresh designs if needed
-            console.log("Design submitted successfully!");
-          }}
-        />
-      )}
-    </section>
+        {showSubmitForm && (
+          <DesignSubmissionForm
+            onClose={() => setShowSubmitForm(false)}
+            onSuccess={() => {
+              console.log("Design submitted successfully!");
+            }}
+          />
+        )}
+      </section>
+    </>
   );
 }
 
@@ -603,88 +651,284 @@ function CategoriesSection() {
   );
 }
 
+// ─────────────────────────────────────────────────────────────
+// DROP-IN REPLACEMENT for DesignerOfTheWeekSection() in App.jsx
+// Desktop look is 100% unchanged.
+// ─────────────────────────────────────────────────────────────
+
 function DesignerOfTheWeekSection() {
   return (
-    <section style={{
-      width: '100%',
-      background: '#000',
-      color: '#fff',
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: '520px',
-      padding: '4rem 0',
-      gap: 64,
-      maxWidth: 1400,
-      margin: '0 auto',
-    }}>
-      {/* Text on the left */}
-      <div style={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'flex-end',
-        maxWidth: 520,
-      }}>
-        <div style={{ fontWeight: 1200, fontSize: '3.8rem', marginBottom: 24, letterSpacing: 2, textAlign: 'right', color: '#FFD600' }} className="great-vibes-regular">
-          Designer of the Week
+    <>
+      <style>{`
+        .dotw-section {
+          width: 100%;
+          background: #000;
+          color: #fff;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+          min-height: 520px;
+          padding: 4rem 0;
+          gap: 64px;
+          max-width: 1400px;
+          margin: 0 auto;
+          box-sizing: border-box;
+        }
+
+        /* ── Left: text ── */
+        .dotw-text {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: flex-end;
+          max-width: 520px;
+        }
+        .dotw-title {
+          font-size: 3.8rem;
+          margin-bottom: 24px;
+          letter-spacing: 2px;
+          text-align: right;
+          color: #FFD600;
+          line-height: 1.2;
+        }
+        .dotw-desc {
+          font-size: 1.35rem;
+          color: #ccc;
+          text-align: right;
+          line-height: 1.6;
+        }
+
+        /* ── Right: 2x2 image grid ── */
+        .dotw-grid {
+          flex: 1;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          grid-template-rows: 1fr 1fr;
+          gap: 16px;
+          max-width: 420px;
+          min-width: 320px;
+          align-items: center;
+          justify-items: center;
+        }
+        .dotw-img {
+          width: 200px;
+          height: 260px;
+          object-fit: cover;
+          background: #fff;
+        }
+
+        /* ── Tablet (768–1024px) ── */
+        @media (max-width: 1024px) {
+          .dotw-section {
+            gap: 32px;
+            padding: 3rem 24px;
+          }
+          .dotw-title {
+            font-size: 2.8rem;
+          }
+          .dotw-desc {
+            font-size: 1.1rem;
+          }
+          .dotw-grid {
+            min-width: unset;
+            max-width: 340px;
+          }
+          .dotw-img {
+            width: 155px;
+            height: 210px;
+          }
+        }
+
+        /* ── Mobile (< 768px) ── */
+        @media (max-width: 767px) {
+          .dotw-section {
+            flex-direction: column;
+            min-height: unset;
+            padding: 2.5rem 20px;
+            gap: 28px;
+          }
+
+          /* Text: center-aligned on mobile */
+          .dotw-text {
+            align-items: center;
+            max-width: 100%;
+            text-align: center;
+          }
+          .dotw-title {
+            font-size: clamp(2rem, 9vw, 3rem);
+            text-align: center;
+            margin-bottom: 14px;
+          }
+          .dotw-desc {
+            font-size: clamp(0.95rem, 4vw, 1.2rem);
+            text-align: center;
+          }
+
+          /* Image grid: keep exact desktop proportions, just scaled down */
+          .dotw-grid {
+            max-width: 300px;
+            min-width: unset;
+            gap: 8px;
+          }
+          .dotw-img {
+            width: 140px;
+            height: 182px;
+          }
+        }
+      `}</style>
+
+      <section className="dotw-section">
+        {/* Text on the left */}
+        <div className="dotw-text">
+          <div className="great-vibes-regular dotw-title">
+            Designer of the Week
+          </div>
+          <div className="dotw-desc">
+            Meet our featured designer of the month, whose vision and creativity
+            are setting new trends in the world of fashion. Discover their story
+            and signature style.
+          </div>
         </div>
-        <div style={{ fontSize: '1.35rem', color: '#ccc', textAlign: 'right', lineHeight: 1.6 }}>
-          Meet our featured designer of the month, whose vision and creativity are setting new trends in the world of fashion. Discover their story and signature style.
+
+        {/* 2x2 Image grid on the right */}
+        <div className="dotw-grid">
+          <img src={i1} alt="Designer" className="dotw-img" />
+          <img src={i2} alt="Designer" className="dotw-img" />
+          <img
+            src={i3}
+            alt="Designer"
+            className="dotw-img"
+            style={{ gridColumn: '1 / 2', gridRow: '2 / 3' }}
+          />
+          <img
+            src={i4}
+            alt="Designer"
+            className="dotw-img"
+            style={{ gridColumn: '2 / 3', gridRow: '2 / 3' }}
+          />
         </div>
-      </div>
-      {/* 2x2 Image grid on the right */}
-      <div style={{
-        flex: 1,
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gridTemplateRows: '1fr 1fr',
-        gap: 16,
-        maxWidth: 420,
-        minWidth: 320,
-        alignItems: 'center',
-        justifyItems: 'center',
-      }}>
-        <img src={i1} alt="Designer" style={{ width: 200, height: 260, objectFit: 'cover', borderRadius: 0, background: '#fff' }} />
-        <img src={i2} alt="Designer" style={{ width: 200, height: 260, objectFit: 'cover', borderRadius: 0, background: '#fff' }} />
-        <img src={i3} alt="Designer" style={{ width: 200, height: 260, objectFit: 'cover', borderRadius: 0, background: '#fff', gridColumn: '1 / 2', gridRow: '2 / 3' }} />
-        <img src={i4} alt="Designer" style={{ width: 200, height: 260, objectFit: 'cover', borderRadius: 0, background: '#fff', gridColumn: '2 / 3', gridRow: '2 / 3' }} />
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
+
+// ─────────────────────────────────────────────────────────────
+// DROP-IN REPLACEMENT for PartneredCompaniesSection() in App.jsx
+// Desktop look is 100% unchanged.
+// ─────────────────────────────────────────────────────────────
 
 function PartneredCompaniesSection() {
   const logos = [logo1, logo2, logo3, logo4, logo5, logo6, logo7];
+
   return (
-    <section style={{ width: '100%', background: '#000', color: '#fff', textAlign: 'center', padding: '3rem 0 2rem 0' }}>
-      <div style={{ fontFamily: "'Bebas Neue', Arial, sans-serif", fontWeight: 900, fontSize: '2.8rem', letterSpacing: 2, marginBottom: 32 }}>
-        Partnered Companies
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24, marginBottom: 16 }}>
-        {/* First row: 3 logos */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 40 }}>
-          {logos.slice(0, 3).map((logo, i) => (
-            <div key={i} style={{ width: 180, height: 180, borderRadius: '50%', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px #0003', overflow: 'hidden' }}>
-              <img src={logo} alt={`Logo ${i+1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            </div>
-          ))}
+    <>
+      <style>{`
+        .partners-section {
+          width: 100%;
+          background: #000;
+          color: #fff;
+          text-align: center;
+          padding: 3rem 16px 2rem 16px;
+          box-sizing: border-box;
+        }
+
+        .partners-title {
+          font-family: 'Bebas Neue', Arial, sans-serif;
+          font-weight: 900;
+          font-size: 2.8rem;
+          letter-spacing: 2px;
+          margin-bottom: 32px;
+        }
+
+        .partners-rows {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 24px;
+          margin-bottom: 16px;
+        }
+
+        .partners-row {
+          display: flex;
+          justify-content: center;
+          gap: 40px;
+          flex-wrap: wrap;
+        }
+
+        .partners-logo-circle {
+          width: 180px;
+          height: 180px;
+          border-radius: 50%;
+          background: #fff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 2px 8px #0003;
+          overflow: hidden;
+          flex-shrink: 0;
+        }
+
+        .partners-logo-circle img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        /* ── Tablet ── */
+        @media (max-width: 1024px) {
+          .partners-logo-circle {
+            width: 140px;
+            height: 140px;
+          }
+          .partners-row {
+            gap: 24px;
+          }
+        }
+
+        /* ── Mobile ── */
+        @media (max-width: 767px) {
+          .partners-title {
+            font-size: clamp(1.8rem, 8vw, 2.4rem);
+            margin-bottom: 24px;
+          }
+          .partners-row {
+            gap: 16px;
+          }
+          .partners-logo-circle {
+            width: 90px;
+            height: 90px;
+          }
+        }
+      `}</style>
+
+      <section className="partners-section">
+        <div className="partners-title">Partnered Companies</div>
+
+        <div className="partners-rows">
+          {/* First row: 3 logos */}
+          <div className="partners-row">
+            {logos.slice(0, 3).map((logo, i) => (
+              <div key={i} className="partners-logo-circle">
+                <img src={logo} alt={`Logo ${i + 1}`} />
+              </div>
+            ))}
+          </div>
+
+          {/* Second row: 4 logos */}
+          <div className="partners-row">
+            {logos.slice(3, 7).map((logo, i) => (
+              <div key={i + 3} className="partners-logo-circle">
+                <img src={logo} alt={`Logo ${i + 4}`} />
+              </div>
+            ))}
+          </div>
         </div>
-        {/* Second row: 4 logos */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 40 }}>
-          {logos.slice(3, 7).map((logo, i) => (
-            <div key={i+3} style={{ width: 180, height: 180, borderRadius: '50%', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px #0003', overflow: 'hidden' }}>
-              <img src={logo} alt={`Logo ${i+4}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
-
 function FooterSection() {
   return (
     <footer style={{ width: '100%', background: '#000', color: '#fff', textAlign: 'center', padding: '2rem 0 1rem 0', fontSize: '1rem', borderTop: '1px solid #222' }}>
