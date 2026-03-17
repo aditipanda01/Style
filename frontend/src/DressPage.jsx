@@ -240,6 +240,17 @@ function DressDesignCard({ design, onUpdate }) {
   const [loading, setLoading] = useState(false);
   const [loadingComments, setLoadingComments] = useState(false);
 
+  // ✅ ADD THIS HERE (your new states)
+  const [collabSent, setCollabSent] = useState(false);
+  const [showCollabModal, setShowCollabModal] = useState(false);
+  const [collabMessage, setCollabMessage] = useState('');
+
+  // ✅ ADD THIS LOGIC
+  const canCollaborate =
+    user?.userType === 'company' &&
+    design.user?._id !== user?._id &&
+    !collabSent;
+
   const handleLike = async () => {
     if (!isAuthenticated) { alert('Please login to like designs'); return; }
     try {
@@ -302,207 +313,140 @@ function DressDesignCard({ design, onUpdate }) {
     }
   };
 
-  const fetchComments = async () => {
-    try {
-      setLoadingComments(true);
-      const response = await fetch(API_ENDPOINTS.DESIGN_COMMENT(design._id));
-      if (response.ok) {
-        const data = await response.json();
-        setComments(data.data.comments || []);
-        setCommentsCount(data.data.commentsCount || 0);
-      }
-    } catch (error) {
-      console.error('Failed to fetch comments:', error);
-    } finally {
-      setLoadingComments(false);
+  // ✅ OPTIONAL: handle collaboration request
+  const handleSendCollab = async () => {
+    if (!collabMessage.trim()) {
+      alert("Please enter a message");
+      return;
     }
-  };
 
-  const handleCommentClick = () => {
-    if (!isAuthenticated) { alert('Please login to view and add comments'); return; }
-    setShowComments(!showComments);
-    if (!showComments && comments.length === 0) fetchComments();
-  };
-
-  const handleAddComment = async (e) => {
-    e.preventDefault();
-    if (!commentText.trim() || !isAuthenticated) return;
     try {
-      setLoading(true);
-      const response = await fetch(API_ENDPOINTS.DESIGN_COMMENT(design._id), {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: commentText.trim() }),
+      const response = await fetch(API_ENDPOINTS.SEND_COLLAB_REQUEST, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          designId: design._id,
+          message: collabMessage,
+        }),
       });
-      if (response.ok) {
-        const data = await response.json();
-        setComments([...comments, data.data.comment]);
-        setCommentsCount(data.data.commentsCount);
-        setCommentText('');
-        onUpdate?.();
-      } else {
-        const error = await response.json();
-        alert(error.error?.message || 'Failed to add comment');
-      }
-    } catch (error) {
-      console.error('Comment error:', error);
-      alert('Failed to add comment');
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
-    return date.toLocaleDateString();
+      if (response.ok) {
+        setCollabSent(true);
+        setShowCollabModal(false);
+        setCollabMessage('');
+        alert("Collaboration request sent!");
+      } else {
+        alert("Failed to send request");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error sending request");
+    }
   };
 
   return (
     <div className="design-card-container">
-      {/* Design image */}
+      {/* Image */}
       <div className="design-card-image">
         {primaryImage && (
           <img src={primaryImage.url} alt="Dress" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         )}
       </div>
 
-      {/* Right content */}
+      {/* Content */}
       <div className="design-card-content-wrapper">
-        {/* Header: name + follow */}
         <div className="design-card-header">
           <div className="design-card-designer-name">
             {design.user?.username || `${design.user?.firstName} ${design.user?.lastName}`}
           </div>
+
           {design.user?._id && design.user._id !== user?._id && (
             <FollowButton userId={design.user._id} />
           )}
         </div>
 
-        {/* Interaction box */}
         <div className="design-card-content">
           <div className="design-card-avatar">
-            {designerPhoto && (
-              <img src={designerPhoto.url} alt="Designer" />
-            )}
+            {designerPhoto && <img src={designerPhoto.url} alt="Designer" />}
           </div>
 
           <div className="design-card-interactions">
             <div className="design-card-icons">
-              <button
-                onClick={handleLike}
-                disabled={loading}
-                className={`design-card-icon-btn ${isLiked ? 'liked' : ''}`}
-                title={`${likesCount} likes`}
-              >
+
+              {/* LIKE */}
+              <button onClick={handleLike} disabled={loading} className={`design-card-icon-btn ${isLiked ? 'liked' : ''}`}>
                 {isLiked ? '❤️' : '♡'}
-                {likesCount > 0 && <span className="design-card-icon-count">{likesCount}</span>}
               </button>
 
-              <button
-                onClick={handleCommentClick}
-                className="design-card-icon-btn"
-                title={`${commentsCount} comments`}
-              >
+              {/* COMMENT */}
+              <button className="design-card-icon-btn">
                 🗨️
-                {commentsCount > 0 && <span className="design-card-icon-count">{commentsCount}</span>}
               </button>
 
-              <button
-                onClick={handleShare}
-                disabled={loading}
-                className="design-card-icon-btn"
-                title={`${sharesCount} shares`}
-              >
+              {/* SHARE */}
+              <button onClick={handleShare} disabled={loading} className="design-card-icon-btn">
                 🔗
-                {sharesCount > 0 && <span className="design-card-icon-count">{sharesCount}</span>}
               </button>
+
+              {/* ✅ COLLAB BUTTON (INSERTED HERE) */}
+              {canCollaborate && (
+                <button
+                  onClick={() => setShowCollabModal(true)}
+                  className="design-card-icon-btn"
+                  title="Send collaboration request"
+                  style={{ color: '#28a745', fontSize: 20 }}
+                >
+                  🤝
+                </button>
+              )}
             </div>
 
             <div className="design-card-inspiration">
-              {design.inspiration || design.description || design.tags?.join(', ') || 'Elegant dress design'}
+              {design.inspiration || design.description || 'Elegant design'}
             </div>
           </div>
         </div>
 
-        {/* Comments Modal */}
-        {showComments && (
+        {/* ✅ COLLAB MODAL */}
+        {showCollabModal && (
           <div className="design-card-comments-modal">
             <div className="design-card-comments-header">
-              <h3 className="design-card-comments-title">Comments ({commentsCount})</h3>
-              <button onClick={() => setShowComments(false)} className="design-card-comments-close">×</button>
+              <h3>Send Collaboration Request</h3>
+              <button onClick={() => setShowCollabModal(false)}>×</button>
             </div>
 
-            <div className="design-card-comments-list">
-              {loadingComments ? (
-                <div style={{ textAlign: 'center', padding: 20, color: '#666' }}>Loading comments...</div>
-              ) : comments.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: 20, color: '#666' }}>No comments yet. Be the first!</div>
-              ) : (
-                comments.map((comment) => (
-                  <div key={comment._id} className="design-card-comment-item">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                      <strong className="design-card-comment-author">
-                        {comment.userId?.username ||
-                          (comment.userId?.userType === 'company'
-                            ? comment.userId?.companyName
-                            : `${comment.userId?.firstName} ${comment.userId?.lastName}`)}
-                      </strong>
-                      <span className="design-card-comment-time">{formatDate(comment.createdAt)}</span>
-                    </div>
-                    <div className="design-card-comment-text">{comment.text}</div>
-                  </div>
-                ))
-              )}
-            </div>
+            <div style={{ padding: 16 }}>
+              <textarea
+                value={collabMessage}
+                onChange={(e) => setCollabMessage(e.target.value)}
+                placeholder="Write your message..."
+                style={{ width: '100%', height: 80, padding: 10 }}
+              />
 
-            {isAuthenticated && (
-              <form
-                onSubmit={handleAddComment}
-                style={{ padding: 16, borderTop: '1px solid #eee', display: 'flex', gap: 8 }}
+              <button
+                onClick={handleSendCollab}
+                style={{
+                  marginTop: 10,
+                  padding: '8px 16px',
+                  background: '#28a745',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 4,
+                  cursor: 'pointer',
+                }}
               >
-                <input
-                  type="text"
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  placeholder="Add a comment..."
-                  maxLength={500}
-                  disabled={loading}
-                  style={{
-                    flex: 1, padding: '8px 12px', border: '1px solid #ddd',
-                    borderRadius: 4, fontSize: 14,
-                  }}
-                />
-                <button
-                  type="submit"
-                  disabled={loading || !commentText.trim()}
-                  style={{
-                    padding: '8px 16px',
-                    background: loading || !commentText.trim() ? '#ccc' : '#222',
-                    color: '#fff', border: 'none', borderRadius: 4,
-                    cursor: loading || !commentText.trim() ? 'not-allowed' : 'pointer',
-                    fontSize: 14, fontWeight: 600,
-                  }}
-                >
-                  {loading ? 'Posting...' : 'Post'}
-                </button>
-              </form>
-            )}
+                Send Request
+              </button>
+            </div>
           </div>
         )}
       </div>
     </div>
   );
 }
-
 // ─────────────────────────────────────────────
 // DressPage (default export)
 // ─────────────────────────────────────────────
