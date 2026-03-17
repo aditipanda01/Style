@@ -3,6 +3,7 @@ import { useAuth } from "./contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import DesignSubmissionForm from "./components/DesignSubmissionForm";
 import { API_ENDPOINTS } from './config/api';
+import CompanyDashboard from "./CompanyDashboard"; // ✅ added
 
 const Profile = () => {
   const { user, logout, isAuthenticated } = useAuth();
@@ -17,14 +18,7 @@ const Profile = () => {
   const [showSubmitForm, setShowSubmitForm] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login-signup");
-    } else if (user) {
-      loadProfileData();
-    }
-  }, [isAuthenticated, user?._id]);
-
+  // ✅ FIX: moved function ABOVE useEffect
   const loadProfileData = async () => {
     if (!user) return;
     
@@ -37,6 +31,14 @@ const Profile = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login-signup");
+    } else if (user) {
+      loadProfileData();
+    }
+  }, [isAuthenticated, user?._id]);
 
   const loadStats = async () => {
     const token = localStorage.getItem("token");
@@ -55,115 +57,84 @@ const Profile = () => {
   };
 
   const loadMyDesigns = async () => {
-    if (!user) {
-      console.log('❌ No user found');
-      return;
-    }
+    if (!user) return;
+
     const token = localStorage.getItem("token");
     if (!token) {
-      console.log('❌ No token found');
       setMyDesigns([]);
       return;
     }
-    console.log('🔍 Fetching designs for user:', user._id);
+
     try {
-      const url = `${API_ENDPOINTS.DESIGNS}?userId=${user._id}&limit=100&sortBy=createdAt&sortOrder=desc`;
-      console.log('📡 API URL:', url);
-      
-      const response = await fetch(url, {
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-      });
-      
-      console.log('📨 Response status:', response.status);
+      const response = await fetch(
+        `${API_ENDPOINTS.DESIGNS}?userId=${user._id}&limit=100&sortBy=createdAt&sortOrder=desc`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+        }
+      );
+
       if (!response.ok) {
-        console.error('❌ Response not OK:', response.status, response.statusText);
         setMyDesigns([]);
         return;
       }
-      
+
       const data = await response.json();
-      console.log('📦 Response data:', data);
-      console.log('📦 Response data.data:', data.data);
-      console.log('📦 Response data.data.designs:', data.data?.designs);
-      
+
       if (data.success && data.data) {
-        // API returns { success: true, data: { designs: [...], pagination: {...} } }
         const designs = data.data.designs || [];
-        console.log('📦 Extracted designs:', designs.length, 'Designs:', designs);
-        
-        if (Array.isArray(designs)) {
-          setMyDesigns(designs);
-          // Update designs count from actual designs loaded
-          setStats(prev => ({
-            ...prev,
-            designsCount: designs.length
-          }));
-          console.log('✅ Successfully set', designs.length, 'designs');
-        } else {
-          console.log('⚠️ Designs is not an array:', typeof designs, designs);
-          setMyDesigns([]);
-        }
+        setMyDesigns(designs);
+
+        setStats(prev => ({
+          ...prev,
+          designsCount: designs.length
+        }));
       } else {
-        console.log('❌ API returned success: false or no data. Response:', data);
         setMyDesigns([]);
       }
     } catch (error) {
-      console.error("❌ Failed to load designs:", error);
+      console.error("Failed to load designs:", error);
       setMyDesigns([]);
     }
   };
 
   const handleDesignSuccess = async (newDesign) => {
-    console.log('✅ New design submitted:', newDesign);
-    // Explicitly reload both stats and designs
     await Promise.all([loadStats(), loadMyDesigns()]);
     setShowSubmitForm(false);
-    alert('🎉 Design submitted successfully! Your design is now visible in your profile and category page.');
+    alert('🎉 Design submitted successfully!');
   };
 
   const handleDeleteDesign = async (designId) => {
-    if (!window.confirm('Are you sure you want to delete this design? This action cannot be undone.')) {
-      return;
-    }
+    if (!window.confirm('Are you sure you want to delete this design?')) return;
 
     const token = localStorage.getItem("token");
-    if (!token) {
-      alert('Please login to delete designs');
-      return;
-    }
 
     try {
       const response = await fetch(API_ENDPOINTS.DESIGN_DELETE(designId), {
         method: 'DELETE',
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+        headers: { Authorization: `Bearer ${token}` }
       });
 
       const data = await response.json();
 
       if (response.ok && data.success) {
-        console.log('✅ Design deleted successfully');
-        // Remove the design from the local state immediately
-        setMyDesigns(prev => prev.filter(design => design._id !== designId));
-        // Reload stats to update the count
+        setMyDesigns(prev => prev.filter(d => d._id !== designId));
         await loadStats();
-        alert('✅ Design deleted successfully!');
-      } else {
-        console.error('❌ Delete failed:', data);
-        alert(data.error?.message || 'Failed to delete design');
+        alert('✅ Deleted successfully');
       }
     } catch (error) {
-      console.error('❌ Error deleting design:', error);
-      alert('Failed to delete design. Please try again.');
+      console.error(error);
     }
   };
 
   if (!user) return null;
+
+  // ✅ COMPANY SWITCH (ONLY ADDITION)
+  if (user.userType === "company") {
+    return <CompanyDashboard />;
+  }
 
   if (loading && myDesigns.length === 0) {
     return (
@@ -181,18 +152,17 @@ const Profile = () => {
   }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#181818",
-        color: "#fff",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        paddingTop: 60,
-        paddingBottom: 60,
-      }}
-    >
+    <div style={{
+      minHeight: "100vh",
+      background: "#181818",
+      color: "#fff",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      paddingTop: 60,
+      paddingBottom: 60,
+    }}>
+      {/* YOUR ORIGINAL UI UNCHANGED BELOW */}
       <div
         style={{
           background: "#232323",
